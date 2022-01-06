@@ -8,7 +8,339 @@
     <author>
       <name>jluyeyu</name>
     </author>
-    <updated>2021-12-31T12:57:00.780Z</updated>
+    <updated>2022-01-06T00:30:52.000Z</updated>
+    <entry>
+        <id>http://jluyeyu.com/interview/html/%E4%BB%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E5%9C%B0%E5%9D%80%E6%A0%8F%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%AD%A5%E9%AA%A4/</id>
+        <title>从浏览器地址栏输入url到显示页面的步骤</title>
+        <link rel="alternate" href="http://jluyeyu.com/interview/html/%E4%BB%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E5%9C%B0%E5%9D%80%E6%A0%8F%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%AD%A5%E9%AA%A4/"/>
+        <content type="html">&lt;h3 id=&#34;从浏览器地址栏输入url到显示页面的步骤&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#从浏览器地址栏输入url到显示页面的步骤&#34;&gt;#&lt;/a&gt; 从浏览器地址栏输入 url 到显示页面的步骤&lt;/h3&gt;
+&lt;h4 id=&#34;基础版本&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#基础版本&#34;&gt;#&lt;/a&gt; 基础版本&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;浏览器根据请求的  &lt;code&gt;URL&lt;/code&gt;  交给  &lt;code&gt;DNS&lt;/code&gt;  域名解析，找到真实  &lt;code&gt;IP &lt;/code&gt; ，向服务器发起请求；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;服务器交给后台处理完成后返回数据，浏览器接收文件（  &lt;code&gt;HTML、JS、CSS &lt;/code&gt; 、图象等）；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;浏览器对加载到的资源（  &lt;code&gt;HTML、JS、CSS &lt;/code&gt; 等）进⾏语法解析，建⽴相应的内部数据结构 （如  &lt;code&gt;HTML&lt;/code&gt;  的  &lt;code&gt;DOM&lt;/code&gt;  ）；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;载⼊解析到的资源⽂件，渲染页面，完成。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;详细版本&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#详细版本&#34;&gt;#&lt;/a&gt; 详细版本&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在浏览器地址栏输入 URL&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;浏览器查看&lt;strong&gt;缓存&lt;/strong&gt;，如果请求资源在缓存中并且新鲜，跳转到转码步骤&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;如果资源未缓存，发起新请求&lt;/li&gt;
+&lt;li&gt;如果已缓存，检验是否足够新鲜，足够新鲜直接提供给客户端，否则与服务器进行验证。&lt;/li&gt;
+&lt;li&gt;检验新鲜通常有两个 HTTP 头进行控制 &lt;code&gt;Expires&lt;/code&gt;  和 &lt;code&gt;Cache-Control&lt;/code&gt; ：
+&lt;ul&gt;
+&lt;li&gt;HTTP1.0 提供 Expires，值为一个绝对时间表示缓存新鲜日期&lt;/li&gt;
+&lt;li&gt;HTTP1.1 增加了 Cache-Control: max-age=, 值为以秒为单位的最大新鲜时间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;浏览器&lt;strong&gt;解析 URL&lt;/strong&gt; 获取协议，主机，端口，path&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;浏览器&lt;strong&gt;组装一个 HTTP（GET）请求报文&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;浏览器&lt;strong&gt;获取主机 ip&lt;/strong&gt; 地址，过程如下：&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;浏览器缓存&lt;/li&gt;
+&lt;li&gt;本机缓存&lt;/li&gt;
+&lt;li&gt;hosts 文件&lt;/li&gt;
+&lt;li&gt;路由器缓存&lt;/li&gt;
+&lt;li&gt;ISP DNS 缓存&lt;/li&gt;
+&lt;li&gt;DNS 递归查询（可能存在负载均衡导致每次 IP 不一样）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;打开一个 socket 与目标 IP 地址，端口建立 TCP 链接&lt;/strong&gt;，三次握手如下：&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;客户端发送一个 TCP 的 &lt;code&gt;SYN=1，Seq=X&lt;/code&gt;  的包到服务器端口&lt;/li&gt;
+&lt;li&gt;服务器发回 &lt;code&gt;SYN=1， ACK=X+1， Seq=Y&lt;/code&gt;  的响应包&lt;/li&gt;
+&lt;li&gt;客户端发送 &lt;code&gt;ACK=Y+1， Seq=Z&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;TCP 链接建立后发送&lt;strong&gt; HTTP 请求&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;服务器接受请求并解析，将请求转发到服务程序，如虚拟主机使用 HTTP Host 头部判断请求的服务程序&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;服务器检查 HTTP 请求头是否包含缓存验证信息如果验证缓存新鲜，返回 304 等对应状态码&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;处理程序读取完整请求并准备 HTTP 响应，可能需要查询数据库等操作&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;服务器将响应报文通过 TCP 连接发送回浏览器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;浏览器接收 HTTP 响应，然后根据情况选择关闭 TCP 连接或者保留重用，关闭 TCP 连接的四次握手如下：&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;主动方发送 &lt;code&gt;Fin=1， Ack=Z， Seq= X&lt;/code&gt;  报文&lt;/li&gt;
+&lt;li&gt;被动方发送 &lt;code&gt;ACK=X+1， Seq=Z&lt;/code&gt;  报文&lt;/li&gt;
+&lt;li&gt;被动方发送 &lt;code&gt;Fin=1， ACK=X， Seq=Y&lt;/code&gt;  报文&lt;/li&gt;
+&lt;li&gt;主动方发送 &lt;code&gt;ACK=Y， Seq=X&lt;/code&gt;  报文&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;浏览器检查响应状态吗：是否为 &lt;code&gt;1XX，3XX， 4XX， 5XX&lt;/code&gt; ，这些情况处理与 2XX 不同&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果资源可缓存，进行缓存&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对响应进行解码（例如 gzip 压缩）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;根据资源类型决定如何处理（假设资源为 HTML 文档）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;解析 HTML 文档，构件 DOM 树，下载资源，构造 CSSOM 树，执行 js 脚本&lt;/strong&gt;，这些操作没有严格的先后顺序，以下分别解释&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;构建 DOM 树：&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;Tokenizing：根据 HTML 规范将字符流解析为标记&lt;/li&gt;
+&lt;li&gt;Lexing：词法分析将标记转换为对象并定义属性和规则&lt;/li&gt;
+&lt;li&gt;DOM construction：根据 HTML 标记关系将对象组成 DOM 树&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;解析过程中遇到图片、样式表、js 文件，启动下载&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;构建 CSSOM 树：&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;`Tokenizing``：字符流转换为标记流&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Node&lt;/code&gt; ：根据标记创建节点&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CSSOM&lt;/code&gt; ：节点创建 CSSOM 树&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-tree-construction&#34;&gt;根据 &lt;code&gt;DOM树&lt;/code&gt; 和 &lt;code&gt;CSSOM树&lt;/code&gt; 构建渲染树:&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;从 DOM 树的根节点遍历所有可见节点，不可见节点包括：1） &lt;code&gt;script&lt;/code&gt; , &lt;code&gt;meta&lt;/code&gt;  这样本身不可见的标签。2) 被 css 隐藏的节点，如 &lt;code&gt;display: none&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;对每一个可见节点，找到恰当的 CSSOM 规则并应用&lt;/li&gt;
+&lt;li&gt;发布可视节点的内容和计算样式&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;js 解析如下：&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;浏览器创建 Document 对象并解析 HTML，将解析到的元素和文本节点添加到文档中，此时&lt;strong&gt; document.readystate 为 loading&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;HTML 解析器遇到没有 &lt;code&gt;async&lt;/code&gt;  和 &lt;code&gt;defer&lt;/code&gt;  的 script 时，将他们添加到文档中，然后执行行内或外部脚本。这些脚本会同步执行，并且在脚本下载和执行时解析器会暂停。这样就可以用 document.write () 把文本插入到输入流中。同步脚本经常简单定义函数和注册事件处理程序，他们可以遍历和操作 script 和他们之前的文档内容&lt;/li&gt;
+&lt;li&gt;当解析器遇到设置了 &lt;code&gt;async&lt;/code&gt;  属性的 script 时，开始下载脚本并继续解析文档。脚本会在它下载完成后尽快执行，但是解析器不会停下来等它下载。异步脚本禁止使用 &lt;code&gt;document.write()&lt;/code&gt; ，它们可以访问自己 script 和之前的文档元素&lt;/li&gt;
+&lt;li&gt;当文档完成解析， &lt;code&gt;document.readState&lt;/code&gt;  变成 &lt;code&gt;interactive&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;所有 &lt;code&gt;defer&lt;/code&gt;  脚本会按照在文档出现的顺序执行， &lt;code&gt;延迟脚本能访问完整文档树，禁止使用document.write()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;浏览器在 Document 对象上触发 &lt;code&gt;DOMContentLoaded&lt;/code&gt;  事件&lt;/li&gt;
+&lt;li&gt;此时文档完全解析完成，浏览器可能还在等待如图片等内容加载，等这些内容完成载入并且所有异步脚本完成载入和执行， &lt;code&gt;document.readState&lt;/code&gt;  变为 &lt;code&gt;complete&lt;/code&gt; , &lt;code&gt;window&lt;/code&gt;  触发 &lt;code&gt;load&lt;/code&gt;  事件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;显示页面（ &lt;code&gt;HTML&lt;/code&gt;  解析过程中会逐步显示页面）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;详细简版&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;从浏览器接收  &lt;code&gt;url&lt;/code&gt;  到开启网络请求线程（这一部分可以展开浏览器的机制以及进程与线程之间的关系）&lt;/li&gt;
+&lt;li&gt;开启网络线程到发出一个完整的 &lt;code&gt;HTTP&lt;/code&gt;  请求（这一部分涉及到 dns 查询， &lt;code&gt;TCP/IP&lt;/code&gt;  请求，五层原因特网协议栈等知识）&lt;/li&gt;
+&lt;li&gt;从服务器接收到请求到对应后台接收到请求（这一部分可能涉及到负载均衡，安全拦截以及后台内部的处理等等）&lt;/li&gt;
+&lt;li&gt;后台和前台的  &lt;code&gt;HTTP&lt;/code&gt;  交互（这一部分包括  &lt;code&gt;HTTP&lt;/code&gt;  头部、响应码、报文结构、 &lt;code&gt;cookie&lt;/code&gt;  等知识，可以提下静态资源的  &lt;code&gt;cookie&lt;/code&gt;  优化，以及编码解码，如 &lt;code&gt;gzip&lt;/code&gt;  压缩等）&lt;/li&gt;
+&lt;li&gt;单独拎出来的缓存问题， &lt;code&gt;HTTP&lt;/code&gt;  的缓存（这部分包括 http 缓存头部， &lt;code&gt;ETag&lt;/code&gt; ， &lt;code&gt;catch-control&lt;/code&gt;  等）&lt;/li&gt;
+&lt;li&gt;浏览器接受到  &lt;code&gt;HTTP&lt;/code&gt;  数据包后的解析流程（解析 &lt;code&gt;html&lt;/code&gt;  - 词法分析然后解析成  &lt;code&gt;dom&lt;/code&gt;  树、解析  &lt;code&gt;css&lt;/code&gt;  生存  &lt;code&gt;css&lt;/code&gt;  规则树、合并成  &lt;code&gt;render&lt;/code&gt;  树，然后  &lt;code&gt;layout&lt;/code&gt; 、 &lt;code&gt;painting&lt;/code&gt;  渲染、复合图层的合成、 &lt;code&gt;GPU&lt;/code&gt;  绘制、外链资源的处理、 &lt;code&gt;loaded&lt;/code&gt;  和  &lt;code&gt;DOMContentLoaded&lt;/code&gt;  等）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CSS&lt;/code&gt;  的可视化格式模型（元素的渲染规则，如包含块，控制框， &lt;code&gt;BFC&lt;/code&gt; ， &lt;code&gt;IFC&lt;/code&gt;  等概念）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;JS&lt;/code&gt;  引擎解析过程（ &lt;code&gt;JS&lt;/code&gt;  的解释阶段，预处理阶段，执行阶段生存执行上下文， &lt;code&gt;V0&lt;/code&gt; ，作用域链、回收机制等等）&lt;/li&gt;
+&lt;li&gt;其它（可以拓展不同的知识模块，如跨域，web 安全， &lt;code&gt;hybrid&lt;/code&gt;  模式等等内容）&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+        <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
+        <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
+        <category term="html" scheme="http://jluyeyu.com/tags/html/" />
+        <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
+        <updated>2022-01-06T00:30:52.000Z</updated>
+    </entry>
+    <entry>
+        <id>http://jluyeyu.com/interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/</id>
+        <title>img标签的title和alt有什么区别</title>
+        <link rel="alternate" href="http://jluyeyu.com/interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/"/>
+        <content type="html">&lt;h3 id=&#34;img标签的-title-和-alt-有什么区别&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#img标签的-title-和-alt-有什么区别&#34;&gt;#&lt;/a&gt; img 标签的 title 和 alt 有什么区别&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;title&lt;/code&gt;  通常是⿏标滑动到元素上的时候显示&lt;br /&gt;
+ alt 是 &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt;  的特有属性，是图片内容的等价描述，⽤于图片外法加载时显示。可提高图片可访问性，除了纯装饰图片外都必须设置有意义的值，搜索引擎会重点分析。&lt;/p&gt;
+</content>
+        <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
+        <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
+        <category term="html" scheme="http://jluyeyu.com/tags/html/" />
+        <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
+        <updated>2022-01-05T13:32:52.000Z</updated>
+    </entry>
+    <entry>
+        <id>http://jluyeyu.com/interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/</id>
+        <title>HTTP的几种常见请求方法用途</title>
+        <link rel="alternate" href="http://jluyeyu.com/interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/"/>
+        <content type="html">&lt;h3 id=&#34;http的几种常见请求方法用途&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#http的几种常见请求方法用途&#34;&gt;#&lt;/a&gt; HTTP 的几种常见请求方法用途&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;GET&lt;/code&gt;  方法
+&lt;ul&gt;
+&lt;li&gt;其目的发送一个请求来取得服务器上的某一资源。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;POST&lt;/code&gt;  方法
+&lt;ul&gt;
+&lt;li&gt;向 URL 指定的资源提交数据或附加新的数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;PUT&lt;/code&gt;  方法
+&lt;ul&gt;
+&lt;li&gt;跟  &lt;code&gt;POST&lt;/code&gt;  方法很像，也是想服务器提交数据。但是，它们之间有不同。 &lt;code&gt;PUT&lt;/code&gt;  指定了资 源在服务器上的位置，而 &lt;code&gt;POST&lt;/code&gt;  没有。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HEAD&lt;/code&gt;  方法
+&lt;ul&gt;
+&lt;li&gt;只请求页面的首部。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DELETE&lt;/code&gt;  方法
+&lt;ul&gt;
+&lt;li&gt;删除服务器上的某资源。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;OPTIONS&lt;/code&gt;  方法
+&lt;ul&gt;
+&lt;li&gt;它用于获取当前 URL 所支持的方法。如果请求成功，会有一个 Allow 的头包含类似  &lt;code&gt;GET,POST&lt;/code&gt;  这样的信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;TRACE&lt;/code&gt;  方法
+&lt;ul&gt;
+&lt;li&gt;它被用于激发一个远程的，应用层的请求消息回路。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CONNECT&lt;/code&gt;  方法
+&lt;ul&gt;
+&lt;li&gt;把请求连接转换到透明的  &lt;code&gt;TCP/IP&lt;/code&gt;  通道。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+        <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
+        <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
+        <category term="html" scheme="http://jluyeyu.com/tags/html/" />
+        <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
+        <updated>2022-01-05T13:30:52.000Z</updated>
+    </entry>
+    <entry>
+        <id>http://jluyeyu.com/interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/</id>
+        <title>前端需要注意哪些SEO</title>
+        <link rel="alternate" href="http://jluyeyu.com/interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/"/>
+        <content type="html">&lt;h3 id=&#34;前端需要注意哪些seo&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#前端需要注意哪些seo&#34;&gt;#&lt;/a&gt; 前端需要注意哪些 SEO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;合理的  &lt;code&gt;title 、 description 、 keywords &lt;/code&gt; ：搜索对着三项的权重逐个减小， title 值强调重点即可，重要关键词出现不要超过 2 次，⽽且要靠前，不同页面 title 要有所不同； description 把页面内容高度概括，长度合适，不可过分堆砌关键词，不同页面 description 有所不同； keywords 列举出重要关键词即可&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;语义化的 HTML 代码&lt;/code&gt; ，符合 W3C 规范：语义化代码让搜索引擎容易理解网页&lt;/li&gt;
+&lt;li&gt;重要内容 HTML 代码放在最前：搜索引擎抓取 HTML 顺序是从上到下，有的搜索引擎对抓取长度有限制，保证重要内容⼀定会被抓取&lt;/li&gt;
+&lt;li&gt;重要内容不要用 js 输出： &lt;code&gt;爬虫不会执行js获取内容&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;少用 iframe ：搜索引擎不会抓取 iframe 中的内容&lt;/li&gt;
+&lt;li&gt;非装饰性图片必须加  &lt;code&gt;alt(图片无法加载时显示的文字)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;提高网站速度：网站速度是搜索引擎排序的⼀个重要指标&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+        <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
+        <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
+        <category term="html" scheme="http://jluyeyu.com/tags/html/" />
+        <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
+        <updated>2022-01-05T13:20:52.000Z</updated>
+    </entry>
+    <entry>
+        <id>http://jluyeyu.com/interview/html/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</id>
+        <title>如何进行网站性能优化</title>
+        <link rel="alternate" href="http://jluyeyu.com/interview/html/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
+        <content type="html">&lt;h3 id=&#34;如何进行网站性能优化&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#如何进行网站性能优化&#34;&gt;#&lt;/a&gt; 如何进行网站性能优化&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;content 方面&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;减少 HTTP 请求：合并文件、 CSS 精灵、 inline Image&lt;/li&gt;
+&lt;li&gt;减少 DNS 查询： DNS 缓存、将资源分布到恰当数量的主机名&lt;/li&gt;
+&lt;li&gt;减少 DOM 元素数量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Server 方面&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 CDN&lt;/li&gt;
+&lt;li&gt;配置 ETag&lt;/li&gt;
+&lt;li&gt;对组件使用 Gzip 压缩&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cookie 方面&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;减小 cookie 大小&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;css 方面&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;将样式表放到页面顶部&lt;/li&gt;
+&lt;li&gt;不使用 CSS 表达式&lt;/li&gt;
+&lt;li&gt;使用  &lt;code&gt;&amp;lt;link&amp;gt;&lt;/code&gt;  不使用 @import&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;Javascript 方面
+&lt;ul&gt;
+&lt;li&gt;将脚本放到页面底部&lt;/li&gt;
+&lt;li&gt;异步加载不是太重要的资源&lt;/li&gt;
+&lt;li&gt;将 javascript 和 css 从外部引入&lt;/li&gt;
+&lt;li&gt;压缩 javascript 和 css&lt;/li&gt;
+&lt;li&gt;删除不需要的脚本&lt;/li&gt;
+&lt;li&gt;减少 DOM 访问&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;图片方面
+&lt;ul&gt;
+&lt;li&gt;优化图片：根据实际颜⾊需要选择⾊深、压缩&lt;/li&gt;
+&lt;li&gt;优化 css 精灵&lt;/li&gt;
+&lt;li&gt;不要在 HTML 中拉伸图片&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+        <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
+        <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
+        <category term="html" scheme="http://jluyeyu.com/tags/html/" />
+        <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
+        <updated>2022-01-05T13:20:52.000Z</updated>
+    </entry>
     <entry>
         <id>http://jluyeyu.com/hello-blog/</id>
         <title>本站说明</title>
@@ -392,109 +724,16 @@ M834 80h400000v40h-400000z&#39;/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;/span&gt;&lt;/s
         <updated>2021-09-01T09:25:52.000Z</updated>
     </entry>
     <entry>
-        <id>http://jluyeyu.com/interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/</id>
-        <title>img标签的title和alt有什么区别</title>
-        <link rel="alternate" href="http://jluyeyu.com/interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/"/>
-        <content type="html">&lt;h3 id=&#34;img标签的-title-和-alt-有什么区别&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#img标签的-title-和-alt-有什么区别&#34;&gt;#&lt;/a&gt; img 标签的 title 和 alt 有什么区别&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;title&lt;/code&gt;  通常是⿏标滑动到元素上的时候显示&lt;br /&gt;
- alt 是 &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt;  的特有属性，是图片内容的等价描述，⽤于图片外法加载时显示。可提高图片可访问性，除了纯装饰图片外都必须设置有意义的值，搜索引擎会重点分析。&lt;/p&gt;
-</content>
-        <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
-        <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
-        <category term="html" scheme="http://jluyeyu.com/tags/html/" />
-        <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
-        <updated>2021-01-05T13:32:52.000Z</updated>
-    </entry>
-    <entry>
-        <id>http://jluyeyu.com/interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/</id>
-        <title>HTTP的几种常见请求方法用途</title>
-        <link rel="alternate" href="http://jluyeyu.com/interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/"/>
-        <content type="html">&lt;h3 id=&#34;http的几种常见请求方法用途&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#http的几种常见请求方法用途&#34;&gt;#&lt;/a&gt; HTTP 的几种常见请求方法用途&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;GET&lt;/code&gt;  方法
-&lt;ul&gt;
-&lt;li&gt;其目的发送一个请求来取得服务器上的某一资源。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;POST&lt;/code&gt;  方法
-&lt;ul&gt;
-&lt;li&gt;向 URL 指定的资源提交数据或附加新的数据。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;PUT&lt;/code&gt;  方法
-&lt;ul&gt;
-&lt;li&gt;跟  &lt;code&gt;POST&lt;/code&gt;  方法很像，也是想服务器提交数据。但是，它们之间有不同。 &lt;code&gt;PUT&lt;/code&gt;  指定了资 源在服务器上的位置，而 &lt;code&gt;POST&lt;/code&gt;  没有。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;HEAD&lt;/code&gt;  方法
-&lt;ul&gt;
-&lt;li&gt;只请求页面的首部。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;DELETE&lt;/code&gt;  方法
-&lt;ul&gt;
-&lt;li&gt;删除服务器上的某资源。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;OPTIONS&lt;/code&gt;  方法
-&lt;ul&gt;
-&lt;li&gt;它用于获取当前 URL 所支持的方法。如果请求成功，会有一个 Allow 的头包含类似  &lt;code&gt;GET,POST&lt;/code&gt;  这样的信息。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;TRACE&lt;/code&gt;  方法
-&lt;ul&gt;
-&lt;li&gt;它被用于激发一个远程的，应用层的请求消息回路。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;CONNECT&lt;/code&gt;  方法
-&lt;ul&gt;
-&lt;li&gt;把请求连接转换到透明的  &lt;code&gt;TCP/IP&lt;/code&gt;  通道。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-</content>
-        <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
-        <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
-        <category term="html" scheme="http://jluyeyu.com/tags/html/" />
-        <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
-        <updated>2021-01-05T13:30:52.000Z</updated>
-    </entry>
-    <entry>
         <id>http://jluyeyu.com/interview/html/html%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E9%97%AE%E9%A2%98/</id>
         <title>html的一些基础问题汇总</title>
         <link rel="alternate" href="http://jluyeyu.com/interview/html/html%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E9%97%AE%E9%A2%98/"/>
         <content type="html">&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;./interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/&#34;&gt; 前端需要注意哪些 SEO&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;./interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/&#34;&gt;img 标签的 title 和 alt 有什么区别&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;./interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/&#34;&gt;HTTP 的几种常见请求方法用途&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/&#34;&gt; 前端需要注意哪些 SEO&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/&#34;&gt;img 标签的 title 和 alt 有什么区别&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/&#34;&gt;HTTP 的几种常见请求方法用途&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../%E4%BB%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E5%9C%B0%E5%9D%80%E6%A0%8F%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%AD%A5%E9%AA%A4/&#34;&gt;从浏览器地址栏输入 url 到显示页面的步骤&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/&#34;&gt;如何进行网站性能优化&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
-</content>
-        <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
-        <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
-        <category term="html" scheme="http://jluyeyu.com/tags/html/" />
-        <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
-        <updated>2021-01-05T13:20:52.000Z</updated>
-    </entry>
-    <entry>
-        <id>http://jluyeyu.com/interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/</id>
-        <title>前端需要注意哪些SEO</title>
-        <link rel="alternate" href="http://jluyeyu.com/interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/"/>
-        <content type="html">&lt;h3 id=&#34;前端需要注意哪些seo&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#前端需要注意哪些seo&#34;&gt;#&lt;/a&gt; 前端需要注意哪些 SEO&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;合理的  &lt;code&gt;title 、 description 、 keywords &lt;/code&gt; ：搜索对着三项的权重逐个减小， title 值强调重点即可，重要关键词出现不要超过 2 次，⽽且要靠前，不同页面 title 要有所不同； description 把页面内容高度概括，长度合适，不可过分堆砌关键词，不同页面 description 有所不同； keywords 列举出重要关键词即可&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;语义化的 HTML 代码&lt;/code&gt; ，符合 W3C 规范：语义化代码让搜索引擎容易理解网页&lt;/li&gt;
-&lt;li&gt;重要内容 HTML 代码放在最前：搜索引擎抓取 HTML 顺序是从上到下，有的搜索引擎对抓取长度有限制，保证重要内容⼀定会被抓取&lt;/li&gt;
-&lt;li&gt;重要内容不要用 js 输出： &lt;code&gt;爬虫不会执行js获取内容&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;少用 iframe ：搜索引擎不会抓取 iframe 中的内容&lt;/li&gt;
-&lt;li&gt;非装饰性图片必须加  &lt;code&gt;alt(图片无法加载时显示的文字)&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;提高网站速度：网站速度是搜索引擎排序的⼀个重要指标&lt;/li&gt;
-&lt;/ul&gt;
 </content>
         <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
         <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />

@@ -7,6 +7,71 @@
     "home_page_url": "http://jluyeyu.com",
     "items": [
         {
+            "id": "http://jluyeyu.com/interview/html/%E4%BB%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E5%9C%B0%E5%9D%80%E6%A0%8F%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%AD%A5%E9%AA%A4/",
+            "url": "http://jluyeyu.com/interview/html/%E4%BB%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E5%9C%B0%E5%9D%80%E6%A0%8F%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%AD%A5%E9%AA%A4/",
+            "title": "从浏览器地址栏输入url到显示页面的步骤",
+            "date_published": "2022-01-06T00:30:52.000Z",
+            "content_html": "<h3 id=\"从浏览器地址栏输入url到显示页面的步骤\"><a class=\"anchor\" href=\"#从浏览器地址栏输入url到显示页面的步骤\">#</a> 从浏览器地址栏输入 url 到显示页面的步骤</h3>\n<h4 id=\"基础版本\"><a class=\"anchor\" href=\"#基础版本\">#</a> 基础版本</h4>\n<ol>\n<li>\n<p>浏览器根据请求的  <code>URL</code>  交给  <code>DNS</code>  域名解析，找到真实  <code>IP </code> ，向服务器发起请求；</p>\n</li>\n<li>\n<p>服务器交给后台处理完成后返回数据，浏览器接收文件（  <code>HTML、JS、CSS </code> 、图象等）；</p>\n</li>\n<li>\n<p>浏览器对加载到的资源（  <code>HTML、JS、CSS </code> 等）进⾏语法解析，建⽴相应的内部数据结构 （如  <code>HTML</code>  的  <code>DOM</code>  ）；</p>\n</li>\n<li>\n<p>载⼊解析到的资源⽂件，渲染页面，完成。</p>\n</li>\n</ol>\n<h4 id=\"详细版本\"><a class=\"anchor\" href=\"#详细版本\">#</a> 详细版本</h4>\n<ol>\n<li>\n<p>在浏览器地址栏输入 URL</p>\n</li>\n<li>\n<p>浏览器查看<strong>缓存</strong>，如果请求资源在缓存中并且新鲜，跳转到转码步骤</p>\n</li>\n<li>\n<ol>\n<li>如果资源未缓存，发起新请求</li>\n<li>如果已缓存，检验是否足够新鲜，足够新鲜直接提供给客户端，否则与服务器进行验证。</li>\n<li>检验新鲜通常有两个 HTTP 头进行控制 <code>Expires</code>  和 <code>Cache-Control</code> ：\n<ul>\n<li>HTTP1.0 提供 Expires，值为一个绝对时间表示缓存新鲜日期</li>\n<li>HTTP1.1 增加了 Cache-Control: max-age=, 值为以秒为单位的最大新鲜时间</li>\n</ul>\n</li>\n</ol>\n</li>\n<li>\n<p>浏览器<strong>解析 URL</strong> 获取协议，主机，端口，path</p>\n</li>\n<li>\n<p>浏览器<strong>组装一个 HTTP（GET）请求报文</strong></p>\n</li>\n<li>\n<p>浏览器<strong>获取主机 ip</strong> 地址，过程如下：</p>\n</li>\n<li>\n<ol>\n<li>浏览器缓存</li>\n<li>本机缓存</li>\n<li>hosts 文件</li>\n<li>路由器缓存</li>\n<li>ISP DNS 缓存</li>\n<li>DNS 递归查询（可能存在负载均衡导致每次 IP 不一样）</li>\n</ol>\n</li>\n<li>\n<p><strong>打开一个 socket 与目标 IP 地址，端口建立 TCP 链接</strong>，三次握手如下：</p>\n</li>\n<li>\n<ol>\n<li>客户端发送一个 TCP 的 <code>SYN=1，Seq=X</code>  的包到服务器端口</li>\n<li>服务器发回 <code>SYN=1， ACK=X+1， Seq=Y</code>  的响应包</li>\n<li>客户端发送 <code>ACK=Y+1， Seq=Z</code></li>\n</ol>\n</li>\n<li>\n<p>TCP 链接建立后发送<strong> HTTP 请求</strong></p>\n</li>\n<li>\n<p>服务器接受请求并解析，将请求转发到服务程序，如虚拟主机使用 HTTP Host 头部判断请求的服务程序</p>\n</li>\n<li>\n<p>服务器检查 HTTP 请求头是否包含缓存验证信息如果验证缓存新鲜，返回 304 等对应状态码</p>\n</li>\n<li>\n<p>处理程序读取完整请求并准备 HTTP 响应，可能需要查询数据库等操作</p>\n</li>\n<li>\n<p>服务器将响应报文通过 TCP 连接发送回浏览器</p>\n</li>\n<li>\n<p>浏览器接收 HTTP 响应，然后根据情况选择关闭 TCP 连接或者保留重用，关闭 TCP 连接的四次握手如下：</p>\n</li>\n<li>\n<ol>\n<li>主动方发送 <code>Fin=1， Ack=Z， Seq= X</code>  报文</li>\n<li>被动方发送 <code>ACK=X+1， Seq=Z</code>  报文</li>\n<li>被动方发送 <code>Fin=1， ACK=X， Seq=Y</code>  报文</li>\n<li>主动方发送 <code>ACK=Y， Seq=X</code>  报文</li>\n</ol>\n</li>\n<li>\n<p>浏览器检查响应状态吗：是否为 <code>1XX，3XX， 4XX， 5XX</code> ，这些情况处理与 2XX 不同</p>\n</li>\n<li>\n<p>如果资源可缓存，进行缓存</p>\n</li>\n<li>\n<p>对响应进行解码（例如 gzip 压缩）</p>\n</li>\n<li>\n<p>根据资源类型决定如何处理（假设资源为 HTML 文档）</p>\n</li>\n<li>\n<p><strong>解析 HTML 文档，构件 DOM 树，下载资源，构造 CSSOM 树，执行 js 脚本</strong>，这些操作没有严格的先后顺序，以下分别解释</p>\n</li>\n<li>\n<p>构建 DOM 树：</p>\n</li>\n<li>\n<ol>\n<li>Tokenizing：根据 HTML 规范将字符流解析为标记</li>\n<li>Lexing：词法分析将标记转换为对象并定义属性和规则</li>\n<li>DOM construction：根据 HTML 标记关系将对象组成 DOM 树</li>\n</ol>\n</li>\n<li>\n<p>解析过程中遇到图片、样式表、js 文件，启动下载</p>\n</li>\n<li>\n<p>构建 CSSOM 树：</p>\n</li>\n<li>\n<ol>\n<li>`Tokenizing``：字符流转换为标记流</li>\n<li><code>Node</code> ：根据标记创建节点</li>\n<li><code>CSSOM</code> ：节点创建 CSSOM 树</li>\n</ol>\n</li>\n<li>\n<p><a href=\"https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-tree-construction\">根据 <code>DOM树</code> 和 <code>CSSOM树</code> 构建渲染树:</a></p>\n</li>\n<li>\n<ol>\n<li>从 DOM 树的根节点遍历所有可见节点，不可见节点包括：1） <code>script</code> , <code>meta</code>  这样本身不可见的标签。2) 被 css 隐藏的节点，如 <code>display: none</code></li>\n<li>对每一个可见节点，找到恰当的 CSSOM 规则并应用</li>\n<li>发布可视节点的内容和计算样式</li>\n</ol>\n</li>\n<li>\n<p>js 解析如下：</p>\n</li>\n<li>\n<ol>\n<li>浏览器创建 Document 对象并解析 HTML，将解析到的元素和文本节点添加到文档中，此时<strong> document.readystate 为 loading</strong></li>\n<li>HTML 解析器遇到没有 <code>async</code>  和 <code>defer</code>  的 script 时，将他们添加到文档中，然后执行行内或外部脚本。这些脚本会同步执行，并且在脚本下载和执行时解析器会暂停。这样就可以用 document.write () 把文本插入到输入流中。同步脚本经常简单定义函数和注册事件处理程序，他们可以遍历和操作 script 和他们之前的文档内容</li>\n<li>当解析器遇到设置了 <code>async</code>  属性的 script 时，开始下载脚本并继续解析文档。脚本会在它下载完成后尽快执行，但是解析器不会停下来等它下载。异步脚本禁止使用 <code>document.write()</code> ，它们可以访问自己 script 和之前的文档元素</li>\n<li>当文档完成解析， <code>document.readState</code>  变成 <code>interactive</code></li>\n<li>所有 <code>defer</code>  脚本会按照在文档出现的顺序执行， <code>延迟脚本能访问完整文档树，禁止使用document.write()</code></li>\n<li>浏览器在 Document 对象上触发 <code>DOMContentLoaded</code>  事件</li>\n<li>此时文档完全解析完成，浏览器可能还在等待如图片等内容加载，等这些内容完成载入并且所有异步脚本完成载入和执行， <code>document.readState</code>  变为 <code>complete</code> , <code>window</code>  触发 <code>load</code>  事件</li>\n</ol>\n</li>\n<li>\n<p>显示页面（ <code>HTML</code>  解析过程中会逐步显示页面）</p>\n</li>\n</ol>\n<p><strong>详细简版</strong></p>\n<ol>\n<li>从浏览器接收  <code>url</code>  到开启网络请求线程（这一部分可以展开浏览器的机制以及进程与线程之间的关系）</li>\n<li>开启网络线程到发出一个完整的 <code>HTTP</code>  请求（这一部分涉及到 dns 查询， <code>TCP/IP</code>  请求，五层原因特网协议栈等知识）</li>\n<li>从服务器接收到请求到对应后台接收到请求（这一部分可能涉及到负载均衡，安全拦截以及后台内部的处理等等）</li>\n<li>后台和前台的  <code>HTTP</code>  交互（这一部分包括  <code>HTTP</code>  头部、响应码、报文结构、 <code>cookie</code>  等知识，可以提下静态资源的  <code>cookie</code>  优化，以及编码解码，如 <code>gzip</code>  压缩等）</li>\n<li>单独拎出来的缓存问题， <code>HTTP</code>  的缓存（这部分包括 http 缓存头部， <code>ETag</code> ， <code>catch-control</code>  等）</li>\n<li>浏览器接受到  <code>HTTP</code>  数据包后的解析流程（解析 <code>html</code>  - 词法分析然后解析成  <code>dom</code>  树、解析  <code>css</code>  生存  <code>css</code>  规则树、合并成  <code>render</code>  树，然后  <code>layout</code> 、 <code>painting</code>  渲染、复合图层的合成、 <code>GPU</code>  绘制、外链资源的处理、 <code>loaded</code>  和  <code>DOMContentLoaded</code>  等）</li>\n<li><code>CSS</code>  的可视化格式模型（元素的渲染规则，如包含块，控制框， <code>BFC</code> ， <code>IFC</code>  等概念）</li>\n<li><code>JS</code>  引擎解析过程（ <code>JS</code>  的解释阶段，预处理阶段，执行阶段生存执行上下文， <code>V0</code> ，作用域链、回收机制等等）</li>\n<li>其它（可以拓展不同的知识模块，如跨域，web 安全， <code>hybrid</code>  模式等等内容）</li>\n</ol>\n",
+            "tags": [
+                "interview",
+                "html",
+                "html",
+                "面试"
+            ]
+        },
+        {
+            "id": "http://jluyeyu.com/interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/",
+            "url": "http://jluyeyu.com/interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/",
+            "title": "img标签的title和alt有什么区别",
+            "date_published": "2022-01-05T13:32:52.000Z",
+            "content_html": "<h3 id=\"img标签的-title-和-alt-有什么区别\"><a class=\"anchor\" href=\"#img标签的-title-和-alt-有什么区别\">#</a> img 标签的 title 和 alt 有什么区别</h3>\n<p><code>title</code>  通常是⿏标滑动到元素上的时候显示<br />\n alt 是 <code>&lt;img&gt;</code>  的特有属性，是图片内容的等价描述，⽤于图片外法加载时显示。可提高图片可访问性，除了纯装饰图片外都必须设置有意义的值，搜索引擎会重点分析。</p>\n",
+            "tags": [
+                "interview",
+                "html",
+                "html",
+                "面试"
+            ]
+        },
+        {
+            "id": "http://jluyeyu.com/interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/",
+            "url": "http://jluyeyu.com/interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/",
+            "title": "HTTP的几种常见请求方法用途",
+            "date_published": "2022-01-05T13:30:52.000Z",
+            "content_html": "<h3 id=\"http的几种常见请求方法用途\"><a class=\"anchor\" href=\"#http的几种常见请求方法用途\">#</a> HTTP 的几种常见请求方法用途</h3>\n<ul>\n<li><code>GET</code>  方法\n<ul>\n<li>其目的发送一个请求来取得服务器上的某一资源。</li>\n</ul>\n</li>\n<li><code>POST</code>  方法\n<ul>\n<li>向 URL 指定的资源提交数据或附加新的数据。</li>\n</ul>\n</li>\n<li><code>PUT</code>  方法\n<ul>\n<li>跟  <code>POST</code>  方法很像，也是想服务器提交数据。但是，它们之间有不同。 <code>PUT</code>  指定了资 源在服务器上的位置，而 <code>POST</code>  没有。</li>\n</ul>\n</li>\n<li><code>HEAD</code>  方法\n<ul>\n<li>只请求页面的首部。</li>\n</ul>\n</li>\n<li><code>DELETE</code>  方法\n<ul>\n<li>删除服务器上的某资源。</li>\n</ul>\n</li>\n<li><code>OPTIONS</code>  方法\n<ul>\n<li>它用于获取当前 URL 所支持的方法。如果请求成功，会有一个 Allow 的头包含类似  <code>GET,POST</code>  这样的信息。</li>\n</ul>\n</li>\n<li><code>TRACE</code>  方法\n<ul>\n<li>它被用于激发一个远程的，应用层的请求消息回路。</li>\n</ul>\n</li>\n<li><code>CONNECT</code>  方法\n<ul>\n<li>把请求连接转换到透明的  <code>TCP/IP</code>  通道。</li>\n</ul>\n</li>\n</ul>\n",
+            "tags": [
+                "interview",
+                "html",
+                "html",
+                "面试"
+            ]
+        },
+        {
+            "id": "http://jluyeyu.com/interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/",
+            "url": "http://jluyeyu.com/interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/",
+            "title": "前端需要注意哪些SEO",
+            "date_published": "2022-01-05T13:20:52.000Z",
+            "content_html": "<h3 id=\"前端需要注意哪些seo\"><a class=\"anchor\" href=\"#前端需要注意哪些seo\">#</a> 前端需要注意哪些 SEO</h3>\n<ul>\n<li>合理的  <code>title 、 description 、 keywords </code> ：搜索对着三项的权重逐个减小， title 值强调重点即可，重要关键词出现不要超过 2 次，⽽且要靠前，不同页面 title 要有所不同； description 把页面内容高度概括，长度合适，不可过分堆砌关键词，不同页面 description 有所不同； keywords 列举出重要关键词即可</li>\n<li><code>语义化的 HTML 代码</code> ，符合 W3C 规范：语义化代码让搜索引擎容易理解网页</li>\n<li>重要内容 HTML 代码放在最前：搜索引擎抓取 HTML 顺序是从上到下，有的搜索引擎对抓取长度有限制，保证重要内容⼀定会被抓取</li>\n<li>重要内容不要用 js 输出： <code>爬虫不会执行js获取内容</code></li>\n<li>少用 iframe ：搜索引擎不会抓取 iframe 中的内容</li>\n<li>非装饰性图片必须加  <code>alt(图片无法加载时显示的文字)</code></li>\n<li>提高网站速度：网站速度是搜索引擎排序的⼀个重要指标</li>\n</ul>\n",
+            "tags": [
+                "interview",
+                "html",
+                "html",
+                "面试"
+            ]
+        },
+        {
+            "id": "http://jluyeyu.com/interview/html/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/",
+            "url": "http://jluyeyu.com/interview/html/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/",
+            "title": "如何进行网站性能优化",
+            "date_published": "2022-01-05T13:20:52.000Z",
+            "content_html": "<h3 id=\"如何进行网站性能优化\"><a class=\"anchor\" href=\"#如何进行网站性能优化\">#</a> 如何进行网站性能优化</h3>\n<ol>\n<li>\n<p>content 方面</p>\n<ul>\n<li>减少 HTTP 请求：合并文件、 CSS 精灵、 inline Image</li>\n<li>减少 DNS 查询： DNS 缓存、将资源分布到恰当数量的主机名</li>\n<li>减少 DOM 元素数量</li>\n</ul>\n</li>\n<li>\n<p>Server 方面</p>\n<ul>\n<li>使用 CDN</li>\n<li>配置 ETag</li>\n<li>对组件使用 Gzip 压缩</li>\n</ul>\n</li>\n<li>\n<p>Cookie 方面</p>\n<ul>\n<li>减小 cookie 大小</li>\n</ul>\n</li>\n<li>\n<p>css 方面</p>\n</li>\n</ol>\n<ul>\n<li>将样式表放到页面顶部</li>\n<li>不使用 CSS 表达式</li>\n<li>使用  <code>&lt;link&gt;</code>  不使用 @import</li>\n</ul>\n<ol start=\"5\">\n<li>Javascript 方面\n<ul>\n<li>将脚本放到页面底部</li>\n<li>异步加载不是太重要的资源</li>\n<li>将 javascript 和 css 从外部引入</li>\n<li>压缩 javascript 和 css</li>\n<li>删除不需要的脚本</li>\n<li>减少 DOM 访问</li>\n</ul>\n</li>\n<li>图片方面\n<ul>\n<li>优化图片：根据实际颜⾊需要选择⾊深、压缩</li>\n<li>优化 css 精灵</li>\n<li>不要在 HTML 中拉伸图片</li>\n</ul>\n</li>\n</ol>\n",
+            "tags": [
+                "interview",
+                "html",
+                "html",
+                "面试"
+            ]
+        },
+        {
             "id": "http://jluyeyu.com/hello-blog/",
             "url": "http://jluyeyu.com/hello-blog/",
             "title": "本站说明",
@@ -96,50 +161,11 @@
             ]
         },
         {
-            "id": "http://jluyeyu.com/interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/",
-            "url": "http://jluyeyu.com/interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/",
-            "title": "img标签的title和alt有什么区别",
-            "date_published": "2021-01-05T13:32:52.000Z",
-            "content_html": "<h3 id=\"img标签的-title-和-alt-有什么区别\"><a class=\"anchor\" href=\"#img标签的-title-和-alt-有什么区别\">#</a> img 标签的 title 和 alt 有什么区别</h3>\n<p><code>title</code>  通常是⿏标滑动到元素上的时候显示<br />\n alt 是 <code>&lt;img&gt;</code>  的特有属性，是图片内容的等价描述，⽤于图片外法加载时显示。可提高图片可访问性，除了纯装饰图片外都必须设置有意义的值，搜索引擎会重点分析。</p>\n",
-            "tags": [
-                "interview",
-                "html",
-                "html",
-                "面试"
-            ]
-        },
-        {
-            "id": "http://jluyeyu.com/interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/",
-            "url": "http://jluyeyu.com/interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/",
-            "title": "HTTP的几种常见请求方法用途",
-            "date_published": "2021-01-05T13:30:52.000Z",
-            "content_html": "<h3 id=\"http的几种常见请求方法用途\"><a class=\"anchor\" href=\"#http的几种常见请求方法用途\">#</a> HTTP 的几种常见请求方法用途</h3>\n<ul>\n<li><code>GET</code>  方法\n<ul>\n<li>其目的发送一个请求来取得服务器上的某一资源。</li>\n</ul>\n</li>\n<li><code>POST</code>  方法\n<ul>\n<li>向 URL 指定的资源提交数据或附加新的数据。</li>\n</ul>\n</li>\n<li><code>PUT</code>  方法\n<ul>\n<li>跟  <code>POST</code>  方法很像，也是想服务器提交数据。但是，它们之间有不同。 <code>PUT</code>  指定了资 源在服务器上的位置，而 <code>POST</code>  没有。</li>\n</ul>\n</li>\n<li><code>HEAD</code>  方法\n<ul>\n<li>只请求页面的首部。</li>\n</ul>\n</li>\n<li><code>DELETE</code>  方法\n<ul>\n<li>删除服务器上的某资源。</li>\n</ul>\n</li>\n<li><code>OPTIONS</code>  方法\n<ul>\n<li>它用于获取当前 URL 所支持的方法。如果请求成功，会有一个 Allow 的头包含类似  <code>GET,POST</code>  这样的信息。</li>\n</ul>\n</li>\n<li><code>TRACE</code>  方法\n<ul>\n<li>它被用于激发一个远程的，应用层的请求消息回路。</li>\n</ul>\n</li>\n<li><code>CONNECT</code>  方法\n<ul>\n<li>把请求连接转换到透明的  <code>TCP/IP</code>  通道。</li>\n</ul>\n</li>\n</ul>\n",
-            "tags": [
-                "interview",
-                "html",
-                "html",
-                "面试"
-            ]
-        },
-        {
             "id": "http://jluyeyu.com/interview/html/html%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E9%97%AE%E9%A2%98/",
             "url": "http://jluyeyu.com/interview/html/html%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E9%97%AE%E9%A2%98/",
             "title": "html的一些基础问题汇总",
             "date_published": "2021-01-05T13:20:52.000Z",
-            "content_html": "<ol>\n<li>\n<p><a href=\"./interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/\"> 前端需要注意哪些 SEO</a></p>\n</li>\n<li>\n<p><a href=\"./interview/html/img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/\">img 标签的 title 和 alt 有什么区别</a></p>\n</li>\n<li>\n<p><a href=\"./interview/html/HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/\">HTTP 的几种常见请求方法用途</a></p>\n</li>\n</ol>\n",
-            "tags": [
-                "interview",
-                "html",
-                "html",
-                "面试"
-            ]
-        },
-        {
-            "id": "http://jluyeyu.com/interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/",
-            "url": "http://jluyeyu.com/interview/html/%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/",
-            "title": "前端需要注意哪些SEO",
-            "date_published": "2021-01-05T13:20:52.000Z",
-            "content_html": "<h3 id=\"前端需要注意哪些seo\"><a class=\"anchor\" href=\"#前端需要注意哪些seo\">#</a> 前端需要注意哪些 SEO</h3>\n<ul>\n<li>合理的  <code>title 、 description 、 keywords </code> ：搜索对着三项的权重逐个减小， title 值强调重点即可，重要关键词出现不要超过 2 次，⽽且要靠前，不同页面 title 要有所不同； description 把页面内容高度概括，长度合适，不可过分堆砌关键词，不同页面 description 有所不同； keywords 列举出重要关键词即可</li>\n<li><code>语义化的 HTML 代码</code> ，符合 W3C 规范：语义化代码让搜索引擎容易理解网页</li>\n<li>重要内容 HTML 代码放在最前：搜索引擎抓取 HTML 顺序是从上到下，有的搜索引擎对抓取长度有限制，保证重要内容⼀定会被抓取</li>\n<li>重要内容不要用 js 输出： <code>爬虫不会执行js获取内容</code></li>\n<li>少用 iframe ：搜索引擎不会抓取 iframe 中的内容</li>\n<li>非装饰性图片必须加  <code>alt(图片无法加载时显示的文字)</code></li>\n<li>提高网站速度：网站速度是搜索引擎排序的⼀个重要指标</li>\n</ul>\n",
+            "content_html": "<ol>\n<li><a href=\"../%E5%89%8D%E7%AB%AF%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E5%93%AA%E4%BA%9BSEO/\"> 前端需要注意哪些 SEO</a></li>\n<li><a href=\"../img%E6%A0%87%E7%AD%BE%E7%9A%84title%E5%92%8Calt%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/\">img 标签的 title 和 alt 有什么区别</a></li>\n<li><a href=\"../HTTP%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E7%94%A8%E9%80%94/\">HTTP 的几种常见请求方法用途</a></li>\n<li><a href=\"../%E4%BB%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E5%9C%B0%E5%9D%80%E6%A0%8F%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%AD%A5%E9%AA%A4/\">从浏览器地址栏输入 url 到显示页面的步骤</a></li>\n<li><a href=\"../%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/\">如何进行网站性能优化</a></li>\n</ol>\n",
             "tags": [
                 "interview",
                 "html",
