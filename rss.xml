@@ -10,8 +10,546 @@
         </author>
         <description></description>
         <language>zh-CN</language>
-        <pubDate>Sat, 08 Jan 2022 13:50:52 +0800</pubDate>
-        <lastBuildDate>Sat, 08 Jan 2022 13:50:52 +0800</lastBuildDate>
+        <pubDate>Sat, 08 Jan 2022 19:35:52 +0800</pubDate>
+        <lastBuildDate>Sat, 08 Jan 2022 19:35:52 +0800</lastBuildDate>
+        <item>
+            <guid isPermalink="true">http://jluyeyu.com/javascript/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91%E5%88%9D%E8%AF%86/</guid>
+            <title>抽象语法树ast初识</title>
+            <link>http://jluyeyu.com/javascript/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91%E5%88%9D%E8%AF%86/</link>
+            <category term="javascript" scheme="http://jluyeyu.com/categories/javascript/" />
+            <category term="javascript" scheme="http://jluyeyu.com/tags/javascript/" />
+            <pubDate>Sat, 08 Jan 2022 19:35:52 +0800</pubDate>
+            <description><![CDATA[ &lt;h2 id=&#34;为什么要了解ast&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#为什么要了解ast&#34;&gt;#&lt;/a&gt; 为什么要了解 AST&lt;/h2&gt;
+&lt;p&gt;如果你想了解 js 编译执行的原理，那么你就得了解 AST，目前前端常用的一些插件或者工具，比如说 javascript 转译、代码压缩、css 预处理器、elint、pretiier 等功能的实现，都是建立在 AST 的基础之上。&lt;/p&gt;
+&lt;p&gt;在线解析 ast 的网站:&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9hc3RleHBsb3Jlci5uZXQv&#34;&gt;https://astexplorer.net/&lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&#34;javascript-编译执行流程&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#javascript-编译执行流程&#34;&gt;#&lt;/a&gt; JavaScript 编译执行流程&lt;/h2&gt;
+&lt;p&gt;js 执行的第一步是读取 js 文件中的字符流，然后通过词法分析生成 token，之后再通过语法分析生成 AST（Abstract Syntax Tree），最后生成机器码执行。&lt;/p&gt;
+&lt;h3 id=&#34;词法分析&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#词法分析&#34;&gt;#&lt;/a&gt; 词法分析&lt;/h3&gt;
+&lt;p&gt;词法分析，也称之为扫描（scanner），简单来说就是调用 next () 方法，一个一个字母的来读取字符，然后与定义好的 JavaScript 关键字符做比较，生成对应的 Token。Token 是一个不可分割的最小单元，例如 var 这三个字符，它只能作为一个整体，语义上不能再被分解，因此它是一个 Token。词法分析器里，每个关键字是一个 Token ，每个标识符是一个 Token，每个操作符是一个 Token，每个标点符号也都是一个 Token。除此之外，还会过滤掉源程序中的注释和空白字符（换行符、空格、制表符等）。&lt;br /&gt;
+最终，整个代码将被分割进一个 tokens 列表（或者说一维数组）。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;n * n;
+
+[
+  &amp;#123; type: &amp;#123; ... &amp;#125;, value: &amp;quot;n&amp;quot;,  loc: &amp;#123; ... &amp;#125; &amp;#125;,
+  &amp;#123; type: &amp;#123; ... &amp;#125;, value: &amp;quot;*&amp;quot;,  loc: &amp;#123; ... &amp;#125; &amp;#125;,
+  &amp;#123; type: &amp;#123; ... &amp;#125;, value: &amp;quot;n&amp;quot;,  loc: &amp;#123; ... &amp;#125; &amp;#125;,
+  ...
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;每一个 type 有一组属性来描述该令牌：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;#123;
+  type: &amp;#123;
+    label: &#39;name&#39;,
+    keyword: undefined,
+    beforeExpr: false,
+    startsExpr: true,
+    rightAssociative: false,
+    isLoop: false,
+    isAssign: false,
+    prefix: false,
+    postfix: false,
+    binop: null,
+    updateContext: null
+  &amp;#125;,
+  ...
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;语法分析&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#语法分析&#34;&gt;#&lt;/a&gt; 语法分析&lt;/h3&gt;
+&lt;p&gt;语法分析会将词法分析出来的 Token 转化成有语法含义的抽象语法树结构。同时，验证语法，语法如果有错的话，抛出语法错误。&lt;/p&gt;
+&lt;h3 id=&#34;什么是ast抽象语法树&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#什么是ast抽象语法树&#34;&gt;#&lt;/a&gt; 什么是 AST（抽象语法树）&lt;/h3&gt;
+&lt;p&gt;抽象语法树（Abstract Syntax Tree，AST），或简称语法树（Syntax tree），是源代码语法结构的一种抽象表示。它以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function square(n) &amp;#123;
+  return n * n;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上面的程序可以被表示成如下的一棵树：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- FunctionDeclaration:
+  - id:
+    - Identifier:
+      - name: square
+  - params [1]
+    - Identifier
+      - name: n
+  - body:
+    - BlockStatement
+      - body [1]
+        - ReturnStatement
+          - argument
+            - Binaryion
+              - operator: *
+              - left
+                - Identifier
+                  - name: n
+              - right
+                - Identifier
+                  - name: n
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或是如下所示的 JavaScript Object（对象）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;#123;
+  type: &amp;quot;FunctionDeclaration&amp;quot;,
+  id: &amp;#123;
+    type: &amp;quot;Identifier&amp;quot;,
+    name: &amp;quot;square&amp;quot;
+  &amp;#125;,
+  params: [&amp;#123;
+    type: &amp;quot;Identifier&amp;quot;,
+    name: &amp;quot;n&amp;quot;
+  &amp;#125;],
+  body: &amp;#123;
+    type: &amp;quot;BlockStatement&amp;quot;,
+    body: [&amp;#123;
+      type: &amp;quot;ReturnStatement&amp;quot;,
+      argument: &amp;#123;
+        type: &amp;quot;BinaryExpression&amp;quot;,
+        operator: &amp;quot;*&amp;quot;,
+        left: &amp;#123;
+          type: &amp;quot;Identifier&amp;quot;,
+          name: &amp;quot;n&amp;quot;
+        &amp;#125;,
+        right: &amp;#123;
+          type: &amp;quot;Identifier&amp;quot;,
+          name: &amp;quot;n&amp;quot;
+        &amp;#125;
+      &amp;#125;
+    &amp;#125;]
+  &amp;#125;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你会留意到 AST 的每一层都拥有相同的结构：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;#123;
+  type: &amp;quot;FunctionDeclaration&amp;quot;,
+  id: &amp;#123;...&amp;#125;,
+  params: [...],
+  body: &amp;#123;...&amp;#125;
+&amp;#125;
+&amp;#123;
+  type: &amp;quot;Identifier&amp;quot;,
+  name: ...
+&amp;#125;
+&amp;#123;
+  type: &amp;quot;BinaryExpression&amp;quot;,
+  operator: ...,
+  left: &amp;#123;...&amp;#125;,
+  right: &amp;#123;...&amp;#125;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样的每一层结构也被叫做 &lt;strong&gt;节点（Node）&lt;/strong&gt;。 一个 AST 可以由单一的节点或是成百上千个节点构成。 它们组合在一起可以描述用于静态分析的程序语法。&lt;/p&gt;
+&lt;p&gt;每一个节点都有如下所示的接口（Interface）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Node &amp;#123;
+  type: string;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;字符串形式的  &lt;code&gt;type&lt;/code&gt;  字段表示节点的类型（如： “ &lt;code&gt;FunctionDeclaration&lt;/code&gt; “，” &lt;code&gt;Identifier&lt;/code&gt; “，或 “ &lt;code&gt;BinaryExpression&lt;/code&gt; “）。 每一种类型的节点定义了一些附加属性用来进一步描述该节点类型。&lt;/p&gt;
+&lt;h3 id=&#34;ast-节点介绍&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#ast-节点介绍&#34;&gt;#&lt;/a&gt; AST 节点介绍&lt;/h3&gt;
+&lt;h4 id=&#34;identifier&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#identifier&#34;&gt;#&lt;/a&gt; Identifier&lt;/h4&gt;
+&lt;p&gt;标识符，就是我们写 JS 时自定义的名称，如变量名，函数名，属性名，都归为标识符。相应的接口是这样的：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Identifier &amp;lt;: Expression, Pattern &amp;#123;
+    type: &amp;quot;Identifier&amp;quot;;
+    name: string;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一个标识符可能是一个表达式，或者是解构的模式（ES6 中的解构语法）。我们等会会看到  &lt;code&gt;Expression&lt;/code&gt;  和  &lt;code&gt;Pattern&lt;/code&gt;  相关的内容的。&lt;/p&gt;
+&lt;h4 id=&#34;literal&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#literal&#34;&gt;#&lt;/a&gt; Literal&lt;/h4&gt;
+&lt;p&gt;字面量，这里不是指  &lt;code&gt;[]&lt;/code&gt;  或者  &lt;code&gt;&amp;#123;&amp;#125;&lt;/code&gt;  这些，而是本身语义就代表了一个值的字面量，如  &lt;code&gt;1&lt;/code&gt; ， &lt;code&gt;“hello”&lt;/code&gt; ,  &lt;code&gt;true&lt;/code&gt;  这些，还有正则表达式（有一个扩展的 Node 来表示正则表达式），如  &lt;code&gt;/\d?/&lt;/code&gt; 。我们看一下文档的定义：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Literal &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;Literal&amp;quot;;
+    value: string | boolean | null | number | RegExp;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里即对应了字面量的值，我们可以看出字面量值的类型，字符串，布尔，数值，null 和正则。&lt;/p&gt;
+&lt;h4 id=&#34;regexpliteral&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#regexpliteral&#34;&gt;#&lt;/a&gt; RegExpLiteral&lt;/h4&gt;
+&lt;p&gt;这个针对正则字面量的，为了更好地来解析正则表达式的内容，添加多一个  &lt;code&gt;regex&lt;/code&gt;  字段，里边会包括正则本身，以及正则的  &lt;code&gt;flags&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface RegExpLiteral &amp;lt;: Literal &amp;#123;
+  regex: &amp;#123;
+    pattern: string;
+    flags: string;
+  &amp;#125;;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;programs&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#programs&#34;&gt;#&lt;/a&gt; Programs&lt;/h4&gt;
+&lt;p&gt;一般这个是作为跟节点的，即代表了一棵完整的程序代码树。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Program &amp;lt;: Node &amp;#123;
+    type: &amp;quot;Program&amp;quot;;
+    body: [ Statement ];
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;body&lt;/code&gt;  属性是一个数组，包含了多个  &lt;code&gt;Statement&lt;/code&gt; （即语句）节点。&lt;/p&gt;
+&lt;h4 id=&#34;functions&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#functions&#34;&gt;#&lt;/a&gt; Functions&lt;/h4&gt;
+&lt;p&gt;函数声明或者函数表达式节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Function &amp;lt;: Node &amp;#123;
+    id: Identifier | null;
+    params: [ Pattern ];
+    body: BlockStatement;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;id&lt;/code&gt;  是函数名， &lt;code&gt;params&lt;/code&gt;  属性是一个数组，表示函数的参数。 &lt;code&gt;body&lt;/code&gt;  是一个块语句。&lt;br /&gt;
+有一个值得留意的点是，你在测试过程中，是不会找到  &lt;code&gt;type: &amp;quot;Function&amp;quot;&lt;/code&gt;  的节点的，但是你可以找到  &lt;code&gt;type: &amp;quot;FunctionDeclaration&amp;quot;&lt;/code&gt;  和  &lt;code&gt;type: &amp;quot;FunctionExpression&amp;quot;&lt;/code&gt; ，因为函数要么以声明语句出现，要么以函数表达式出现，都是节点类型的组合类型，后边会再提及  &lt;code&gt;FunctionDeclaration&lt;/code&gt;  和  &lt;code&gt;FunctionExpression&lt;/code&gt;  的相关内容。&lt;br /&gt;
+这让人感觉这个文档规划得蛮细致的，函数名，参数和函数块是属于函数部分的内容，而声明或者表达式则有它自己需要的东西。&lt;/p&gt;
+&lt;h4 id=&#34;statement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#statement&#34;&gt;#&lt;/a&gt; Statement&lt;/h4&gt;
+&lt;p&gt;语句节点没什么特别的，它只是一个节点，一种区分，但是语句有很多种，下边会详述。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Statement &amp;lt;: Node &amp;#123; &amp;#125;ExpressionStatement
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;expressionstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#expressionstatement&#34;&gt;#&lt;/a&gt; ExpressionStatement&lt;/h4&gt;
+&lt;p&gt;表达式语句节点， &lt;code&gt;a = a + 1&lt;/code&gt;  或者  &lt;code&gt;a++&lt;/code&gt;  里边会有一个  &lt;code&gt;expression&lt;/code&gt;  属性指向一个表达式节点对象（后边会提及表达式）。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ExpressionStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;ExpressionStatement&amp;quot;;
+    expression: Expression;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;blockstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#blockstatement&#34;&gt;#&lt;/a&gt; BlockStatement&lt;/h4&gt;
+&lt;p&gt;块语句节点，举个例子： &lt;code&gt;if (...) &amp;#123; // 这里是块语句的内容 &amp;#125;&lt;/code&gt; ，块里边可以包含多个其他的语句，所以有一个  &lt;code&gt;body&lt;/code&gt;  属性，是一个数组，表示了块里边的多个语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface BlockStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;BlockStatement&amp;quot;;
+    body: [ Statement ];
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;emptystatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#emptystatement&#34;&gt;#&lt;/a&gt; EmptyStatement&lt;/h4&gt;
+&lt;p&gt;一个空的语句节点，没有执行任何有用的代码，例如一个单独的分号；&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface EmptyStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;EmptyStatement&amp;quot;;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;debuggerstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#debuggerstatement&#34;&gt;#&lt;/a&gt; DebuggerStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;debugger&lt;/code&gt; ，就是表示这个，没有其他了。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface DebuggerStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;DebuggerStatement&amp;quot;;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;withstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#withstatement&#34;&gt;#&lt;/a&gt; WithStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;with&lt;/code&gt;  语句节点，里边有两个特别的属性， &lt;code&gt;object&lt;/code&gt;  表示  &lt;code&gt;with&lt;/code&gt;  要使用的那个对象（可以是一个表达式）， &lt;code&gt;body&lt;/code&gt;  则是对应  &lt;code&gt;with&lt;/code&gt;  后边要执行的语句，一般会是一个块语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface WithStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;WithStatement&amp;quot;;
+    object: Expression;
+    body: Statement;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下边是控制流的语句：&lt;/p&gt;
+&lt;h4 id=&#34;returnstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#returnstatement&#34;&gt;#&lt;/a&gt; ReturnStatement&lt;/h4&gt;
+&lt;p&gt;返回语句节点， &lt;code&gt;argument&lt;/code&gt;  属性是一个表达式，代表返回的内容。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ReturnStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;ReturnStatement&amp;quot;;
+    argument: Expression | null;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;labeledstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#labeledstatement&#34;&gt;#&lt;/a&gt; LabeledStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;label&lt;/code&gt;  语句，平时可能会比较少接触到，举个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;loop: for(let i = 0; i &amp;lt; len; i++) &amp;#123;
+    // ...
+    for (let j = 0; j &amp;lt; min; j++) &amp;#123;
+        // ...
+        break loop;
+    &amp;#125;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里的  &lt;code&gt;loop&lt;/code&gt;  就是一个  &lt;code&gt;label&lt;/code&gt;  了，我们可以在循环嵌套中使用  &lt;code&gt;break loop&lt;/code&gt;  来指定跳出哪个循环。所以这里的  &lt;code&gt;label&lt;/code&gt;  语句指的就是  &lt;code&gt;loop: ...&lt;/code&gt;  这个。&lt;br /&gt;
+一个  &lt;code&gt;label&lt;/code&gt;  语句节点会有两个属性，一个  &lt;code&gt;label&lt;/code&gt;  属性表示  &lt;code&gt;label&lt;/code&gt;  的名称，另外一个  &lt;code&gt;body&lt;/code&gt;  属性指向对应的语句，通常是一个循环语句或者  &lt;code&gt;switch&lt;/code&gt;  语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface LabeledStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;LabeledStatement&amp;quot;;
+    label: Identifier;
+    body: Statement;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;breakstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#breakstatement&#34;&gt;#&lt;/a&gt; BreakStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;break&lt;/code&gt;  语句节点，会有一个  &lt;code&gt;label&lt;/code&gt;  属性表示需要的  &lt;code&gt;label&lt;/code&gt;  名称，当不需要  &lt;code&gt;label&lt;/code&gt;  的时候（通常都不需要），便是  &lt;code&gt;null&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface BreakStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;BreakStatement&amp;quot;;
+    label: Identifier | null;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;continuestatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#continuestatement&#34;&gt;#&lt;/a&gt; ContinueStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;continue&lt;/code&gt;  语句节点，和  &lt;code&gt;break&lt;/code&gt;  类似。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ContinueStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;ContinueStatement&amp;quot;;
+    label: Identifier | null;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下边是条件语句：&lt;/p&gt;
+&lt;h4 id=&#34;ifstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#ifstatement&#34;&gt;#&lt;/a&gt; IfStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;if&lt;/code&gt;  语句节点，很常见，会带有三个属性，test 属性表示  &lt;code&gt;if (...)&lt;/code&gt;  括号中的表达式。&lt;br /&gt;
+ &lt;code&gt;consequent&lt;/code&gt;  属性是表示条件为  &lt;code&gt;true&lt;/code&gt;  时的执行语句，通常会是一个块语句。&lt;br /&gt;
+ &lt;code&gt;alternate&lt;/code&gt;  属性则是用来表示  &lt;code&gt;else&lt;/code&gt;  后跟随的语句节点，通常也会是块语句，但也可以又是一个  &lt;code&gt;if&lt;/code&gt;  语句节点，即类似这样的结构： &lt;code&gt;if (a) &amp;#123; //... &amp;#125; else if (b) &amp;#123; // ... &amp;#125;&lt;/code&gt; 。 &lt;code&gt;alternate&lt;/code&gt;  当然也可以为  &lt;code&gt;null&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface IfStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;IfStatement&amp;quot;;
+    test: Expression;
+    consequent: Statement;
+    alternate: Statement | null;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;switchstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#switchstatement&#34;&gt;#&lt;/a&gt; SwitchStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;switch&lt;/code&gt;  语句节点，有两个属性， &lt;code&gt;discriminant&lt;/code&gt;  属性表示  &lt;code&gt;switch&lt;/code&gt;  语句后紧随的表达式，通常会是一个变量， &lt;code&gt;cases&lt;/code&gt;  属性是一个  &lt;code&gt;case&lt;/code&gt;  节点的数组，用来表示各个  &lt;code&gt;case&lt;/code&gt;  语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface SwitchStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;SwitchStatement&amp;quot;;
+    discriminant: Expression;
+    cases: [ SwitchCase ];
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;switchcase&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#switchcase&#34;&gt;#&lt;/a&gt; SwitchCase&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;switch&lt;/code&gt;  的  &lt;code&gt;case&lt;/code&gt;  节点。 &lt;code&gt;test&lt;/code&gt;  属性代表这个  &lt;code&gt;case&lt;/code&gt;  的判断表达式， &lt;code&gt;consequent&lt;/code&gt;  则是这个  &lt;code&gt;case&lt;/code&gt;  的执行语句。&lt;br /&gt;
+当  &lt;code&gt;test&lt;/code&gt;  属性是  &lt;code&gt;null&lt;/code&gt;  时，则是表示  &lt;code&gt;default&lt;/code&gt;  这个  &lt;code&gt;case&lt;/code&gt;  节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface SwitchCase &amp;lt;: Node &amp;#123;
+    type: &amp;quot;SwitchCase&amp;quot;;
+    test: Expression | null;
+    consequent: [ Statement ];
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下边是异常相关的语句：&lt;/p&gt;
+&lt;h4 id=&#34;throwstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#throwstatement&#34;&gt;#&lt;/a&gt; ThrowStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;throw&lt;/code&gt;  语句节点， &lt;code&gt;argument&lt;/code&gt;  属性用以表示  &lt;code&gt;throw&lt;/code&gt;  后边紧跟的表达式。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ThrowStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;ThrowStatement&amp;quot;;
+    argument: Expression;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;trystatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#trystatement&#34;&gt;#&lt;/a&gt; TryStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;try&lt;/code&gt;  语句节点， &lt;code&gt;block&lt;/code&gt;  属性表示  &lt;code&gt;try&lt;/code&gt;  的执行语句，通常是一个块语句。&lt;br /&gt;
+ &lt;code&gt;hanlder&lt;/code&gt;  属性是指  &lt;code&gt;catch&lt;/code&gt;  节点， &lt;code&gt;finalizer&lt;/code&gt;  是指  &lt;code&gt;finally&lt;/code&gt;  语句节点，当  &lt;code&gt;hanlder&lt;/code&gt;  为  &lt;code&gt;null&lt;/code&gt;  时， &lt;code&gt;finalizer&lt;/code&gt;  必须是一个块语句节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface TryStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;TryStatement&amp;quot;;
+    block: BlockStatement;
+    handler: CatchClause | null;
+    finalizer: BlockStatement | null;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;catchclause&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#catchclause&#34;&gt;#&lt;/a&gt; CatchClause&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;catch&lt;/code&gt;  节点， &lt;code&gt;param&lt;/code&gt;  用以表示  &lt;code&gt;catch&lt;/code&gt;  后的参数， &lt;code&gt;body&lt;/code&gt;  则表示  &lt;code&gt;catch&lt;/code&gt;  后的执行语句，通常是一个块语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface CatchClause &amp;lt;: Node &amp;#123;
+    type: &amp;quot;CatchClause&amp;quot;;
+    param: Pattern;
+    body: BlockStatement;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下边是循环语句：&lt;/p&gt;
+&lt;h4 id=&#34;whilestatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#whilestatement&#34;&gt;#&lt;/a&gt; WhileStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;while&lt;/code&gt;  语句节点， &lt;code&gt;test&lt;/code&gt;  表示括号中的表达式， &lt;code&gt;body&lt;/code&gt;  是表示要循环执行的语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface WhileStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;WhileStatement&amp;quot;;
+    test: Expression;
+    body: Statement;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;dowhilestatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#dowhilestatement&#34;&gt;#&lt;/a&gt; DoWhileStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;do/while&lt;/code&gt;  语句节点，和  &lt;code&gt;while&lt;/code&gt;  语句类似。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface DoWhileStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;DoWhileStatement&amp;quot;;
+    body: Statement;
+    test: Expression;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;forstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#forstatement&#34;&gt;#&lt;/a&gt; ForStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;for&lt;/code&gt;  循环语句节点，属性  &lt;code&gt;init/test/update&lt;/code&gt;  分别表示了  &lt;code&gt;for&lt;/code&gt;  语句括号中的三个表达式，初始化值，循环判断条件，每次循环执行的变量更新语句（ &lt;code&gt;init&lt;/code&gt;  可以是变量声明或者表达式）。这三个属性都可以为  &lt;code&gt;null&lt;/code&gt; ，即  &lt;code&gt;for(;;)&amp;#123;&amp;#125;&lt;/code&gt; 。 &lt;code&gt;body&lt;/code&gt;  属性用以表示要循环执行的语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ForStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;ForStatement&amp;quot;;
+    init: VariableDeclaration | Expression | null;
+    test: Expression | null;
+    update: Expression | null;
+    body: Statement;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;forinstatement&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#forinstatement&#34;&gt;#&lt;/a&gt; ForInStatement&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;for/in&lt;/code&gt;  语句节点， &lt;code&gt;left&lt;/code&gt;  和  &lt;code&gt;right&lt;/code&gt;  属性分别表示在  &lt;code&gt;in&lt;/code&gt;  关键词左右的语句（左侧可以是一个变量声明或者表达式）。 &lt;code&gt;body&lt;/code&gt;  依旧是表示要循环执行的语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ForInStatement &amp;lt;: Statement &amp;#123;
+    type: &amp;quot;ForInStatement&amp;quot;;
+    left: VariableDeclaration |  Pattern;
+    right: Expression;
+    body: Statement;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;declarations&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#declarations&#34;&gt;#&lt;/a&gt; Declarations&lt;/h4&gt;
+&lt;p&gt;声明语句节点，同样也是语句，只是一个类型的细化。下边会介绍各种声明语句类型。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Declaration &amp;lt;: Statement &amp;#123; &amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;functiondeclaration&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#functiondeclaration&#34;&gt;#&lt;/a&gt; FunctionDeclaration&lt;/h4&gt;
+&lt;p&gt;函数声明，和之前提到的  &lt;code&gt;Function&lt;/code&gt;  不同的是， &lt;code&gt;id&lt;/code&gt;  不能为  &lt;code&gt;null&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface FunctionDeclaration &amp;lt;: Function, Declaration &amp;#123;
+    type: &amp;quot;FunctionDeclaration&amp;quot;;
+    id: Identifier;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;variabledeclaration&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#variabledeclaration&#34;&gt;#&lt;/a&gt; VariableDeclaration&lt;/h4&gt;
+&lt;p&gt;变量声明， &lt;code&gt;kind&lt;/code&gt;  属性表示是什么类型的声明，因为 ES6 引入了  &lt;code&gt;const/let&lt;/code&gt; 。 &lt;code&gt;declarations&lt;/code&gt;  表示声明的多个描述，因为我们可以这样： &lt;code&gt;let a = 1, b = 2;&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface VariableDeclaration &amp;lt;: Declaration &amp;#123;
+    type: &amp;quot;VariableDeclaration&amp;quot;;
+    declarations: [ VariableDeclarator ];
+    kind: &amp;quot;var&amp;quot;;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;variabledeclarator&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#variabledeclarator&#34;&gt;#&lt;/a&gt; VariableDeclarator&lt;/h4&gt;
+&lt;p&gt;变量声明的描述， &lt;code&gt;id&lt;/code&gt;  表示变量名称节点， &lt;code&gt;init&lt;/code&gt;  表示初始值的表达式，可以为  &lt;code&gt;null&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface VariableDeclarator &amp;lt;: Node &amp;#123;
+    type: &amp;quot;VariableDeclarator&amp;quot;;
+    id: Pattern;
+    init: Expression | null;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;expressions&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#expressions&#34;&gt;#&lt;/a&gt; Expressions&lt;/h4&gt;
+&lt;p&gt;表达式节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Expression &amp;lt;: Node &amp;#123; &amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;thisexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#thisexpression&#34;&gt;#&lt;/a&gt; ThisExpression&lt;/h4&gt;
+&lt;p&gt;表示  &lt;code&gt;this&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ThisExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;ThisExpression&amp;quot;;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;arrayexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#arrayexpression&#34;&gt;#&lt;/a&gt; ArrayExpression&lt;/h4&gt;
+&lt;p&gt;数组表达式节点， &lt;code&gt;elements&lt;/code&gt;  属性是一个数组，表示数组的多个元素，每一个元素都是一个表达式节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ArrayExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;ArrayExpression&amp;quot;;
+    elements: [ Expression | null ];
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;objectexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#objectexpression&#34;&gt;#&lt;/a&gt; ObjectExpression&lt;/h4&gt;
+&lt;p&gt;对象表达式节点， &lt;code&gt;property&lt;/code&gt;  属性是一个数组，表示对象的每一个键值对，每一个元素都是一个属性节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ObjectExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;ObjectExpression&amp;quot;;
+    properties: [ Property ];
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;property&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#property&#34;&gt;#&lt;/a&gt; Property&lt;/h4&gt;
+&lt;p&gt;对象表达式中的属性节点。 &lt;code&gt;key&lt;/code&gt;  表示键， &lt;code&gt;value&lt;/code&gt;  表示值，由于 ES5 语法中有  &lt;code&gt;get/set&lt;/code&gt;  的存在，所以有一个  &lt;code&gt;kind&lt;/code&gt;  属性，用来表示是普通的初始化，或者是  &lt;code&gt;get/set&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Property &amp;lt;: Node &amp;#123;
+    type: &amp;quot;Property&amp;quot;;
+    key: Literal | Identifier;
+    value: Expression;
+    kind: &amp;quot;init&amp;quot; | &amp;quot;get&amp;quot; | &amp;quot;set&amp;quot;;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;functionexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#functionexpression&#34;&gt;#&lt;/a&gt; FunctionExpression&lt;/h4&gt;
+&lt;p&gt;函数表达式节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface FunctionExpression &amp;lt;: Function, Expression &amp;#123;
+    type: &amp;quot;FunctionExpression&amp;quot;;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下边是一元运算符相关的表达式部分：&lt;/p&gt;
+&lt;h4 id=&#34;unaryexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#unaryexpression&#34;&gt;#&lt;/a&gt; UnaryExpression&lt;/h4&gt;
+&lt;p&gt;一元运算表达式节点（ &lt;code&gt;++/--&lt;/code&gt;  是  &lt;code&gt;update&lt;/code&gt;  运算符，不在这个范畴内）， &lt;code&gt;operator&lt;/code&gt;  表示运算符， &lt;code&gt;prefix&lt;/code&gt;  表示是否为前缀运算符。 &lt;code&gt;argument&lt;/code&gt;  是要执行运算的表达式。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface UnaryExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;UnaryExpression&amp;quot;;
+    operator: UnaryOperator;
+    prefix: boolean;
+    argument: Expression;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;unaryoperator&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#unaryoperator&#34;&gt;#&lt;/a&gt; UnaryOperator&lt;/h4&gt;
+&lt;p&gt;一元运算符，枚举类型，所有值如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;enum UnaryOperator &amp;#123;
+    &amp;quot;-&amp;quot; | &amp;quot;+&amp;quot; | &amp;quot;!&amp;quot; | &amp;quot;~&amp;quot; | &amp;quot;typeof&amp;quot; | &amp;quot;void&amp;quot; | &amp;quot;delete&amp;quot;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;updateexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#updateexpression&#34;&gt;#&lt;/a&gt; UpdateExpression&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;update&lt;/code&gt;  运算表达式节点，即  &lt;code&gt;++/--&lt;/code&gt; ，和一元运算符类似，只是  &lt;code&gt;operator&lt;/code&gt;  指向的节点对象类型不同，这里是  &lt;code&gt;update&lt;/code&gt;  运算符。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface UpdateExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;UpdateExpression&amp;quot;;
+    operator: UpdateOperator;
+    argument: Expression;
+    prefix: boolean;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;updateoperator&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#updateoperator&#34;&gt;#&lt;/a&gt; UpdateOperator&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;update&lt;/code&gt;  运算符，值为  &lt;code&gt;++&lt;/code&gt;  或  &lt;code&gt;--&lt;/code&gt; ，配合  &lt;code&gt;update&lt;/code&gt;  表达式节点的  &lt;code&gt;prefix&lt;/code&gt;  属性来表示前后。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;enum UpdateOperator &amp;#123;
+    &amp;quot;++&amp;quot; | &amp;quot;--&amp;quot;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下边是二元运算符相关的表达式部分：&lt;/p&gt;
+&lt;h4 id=&#34;binaryexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#binaryexpression&#34;&gt;#&lt;/a&gt; BinaryExpression&lt;/h4&gt;
+&lt;p&gt;二元运算表达式节点， &lt;code&gt;left&lt;/code&gt;  和  &lt;code&gt;right&lt;/code&gt;  表示运算符左右的两个表达式， &lt;code&gt;operator&lt;/code&gt;  表示一个二元运算符。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface BinaryExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;BinaryExpression&amp;quot;;
+    operator: BinaryOperator;
+    left: Expression;
+    right: Expression;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;binaryoperator&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#binaryoperator&#34;&gt;#&lt;/a&gt; BinaryOperator&lt;/h4&gt;
+&lt;p&gt;二元运算符，所有值如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;enum BinaryOperator &amp;#123;
+    &amp;quot;==&amp;quot; | &amp;quot;!=&amp;quot; | &amp;quot;===&amp;quot; | &amp;quot;!==&amp;quot;
+         | &amp;quot;&amp;lt;&amp;quot; | &amp;quot;&amp;lt;=&amp;quot; | &amp;quot;&amp;gt;&amp;quot; | &amp;quot;&amp;gt;=&amp;quot;
+         | &amp;quot;&amp;lt;&amp;lt;&amp;quot; | &amp;quot;&amp;gt;&amp;gt;&amp;quot; | &amp;quot;&amp;gt;&amp;gt;&amp;gt;&amp;quot;
+         | &amp;quot;+&amp;quot; | &amp;quot;-&amp;quot; | &amp;quot;*&amp;quot; | &amp;quot;/&amp;quot; | &amp;quot;%&amp;quot;
+         | &amp;quot;|&amp;quot; | &amp;quot;^&amp;quot; | &amp;quot;&amp;amp;&amp;quot; | &amp;quot;in&amp;quot;
+         | &amp;quot;instanceof&amp;quot;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;assignmentexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#assignmentexpression&#34;&gt;#&lt;/a&gt; AssignmentExpression&lt;/h4&gt;
+&lt;p&gt;赋值表达式节点， &lt;code&gt;operator&lt;/code&gt;  属性表示一个赋值运算符， &lt;code&gt;left&lt;/code&gt;  和  &lt;code&gt;right&lt;/code&gt;  是赋值运算符左右的表达式。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface AssignmentExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;AssignmentExpression&amp;quot;;
+    operator: AssignmentOperator;
+    left: Pattern | Expression;
+    right: Expression;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;assignmentoperator&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#assignmentoperator&#34;&gt;#&lt;/a&gt; AssignmentOperator&lt;/h4&gt;
+&lt;p&gt;赋值运算符，所有值如下：（常用的并不多）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;enum AssignmentOperator &amp;#123;
+    &amp;quot;=&amp;quot; | &amp;quot;+=&amp;quot; | &amp;quot;-=&amp;quot; | &amp;quot;*=&amp;quot; | &amp;quot;/=&amp;quot; | &amp;quot;%=&amp;quot;
+        | &amp;quot;&amp;lt;&amp;lt;=&amp;quot; | &amp;quot;&amp;gt;&amp;gt;=&amp;quot; | &amp;quot;&amp;gt;&amp;gt;&amp;gt;=&amp;quot;
+        | &amp;quot;|=&amp;quot; | &amp;quot;^=&amp;quot; | &amp;quot;&amp;amp;=&amp;quot;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;logicalexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#logicalexpression&#34;&gt;#&lt;/a&gt; LogicalExpression&lt;/h4&gt;
+&lt;p&gt;逻辑运算表达式节点，和赋值或者二元运算类型，只不过  &lt;code&gt;operator&lt;/code&gt;  是逻辑运算符类型。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface LogicalExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;LogicalExpression&amp;quot;;
+    operator: LogicalOperator;
+    left: Expression;
+    right: Expression;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;logicaloperator&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#logicaloperator&#34;&gt;#&lt;/a&gt; LogicalOperator&lt;/h4&gt;
+&lt;p&gt;逻辑运算符，两种值，即 &lt;code&gt;与&lt;/code&gt;   &lt;code&gt;或&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;enum LogicalOperator &amp;#123;
+    &amp;quot;||&amp;quot; | &amp;quot;&amp;amp;&amp;amp;&amp;quot;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;memberexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#memberexpression&#34;&gt;#&lt;/a&gt; MemberExpression&lt;/h4&gt;
+&lt;p&gt;成员表达式节点，即表示引用对象成员的语句， &lt;code&gt;object&lt;/code&gt;  是引用对象的表达式节点， &lt;code&gt;property&lt;/code&gt;  是表示属性名称， &lt;code&gt;computed&lt;/code&gt;  如果为  &lt;code&gt;false&lt;/code&gt; ，是表示  &lt;code&gt;.&lt;/code&gt;  来引用成员， &lt;code&gt;property&lt;/code&gt;  应该为一个  &lt;code&gt;Identifier&lt;/code&gt;  节点，如果  &lt;code&gt;computed&lt;/code&gt;  属性为  &lt;code&gt;true&lt;/code&gt; ，则是  &lt;code&gt;[]&lt;/code&gt;  来进行引用，即  &lt;code&gt;property&lt;/code&gt;  是一个  &lt;code&gt;Expression&lt;/code&gt;  节点，名称是表达式的结果值。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface MemberExpression &amp;lt;: Expression, Pattern &amp;#123;
+    type: &amp;quot;MemberExpression&amp;quot;;
+    object: Expression;
+    property: Expression;
+    computed: boolean;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下边是其他的一些表达式：&lt;/p&gt;
+&lt;h4 id=&#34;conditionalexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#conditionalexpression&#34;&gt;#&lt;/a&gt; ConditionalExpression&lt;/h4&gt;
+&lt;p&gt;条件表达式，通常我们称之为三元运算表达式，即  &lt;code&gt;boolean ? true : false&lt;/code&gt; 。属性参考条件语句。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface ConditionalExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;ConditionalExpression&amp;quot;;
+    test: Expression;
+    alternate: Expression;
+    consequent: Expression;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;callexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#callexpression&#34;&gt;#&lt;/a&gt; CallExpression&lt;/h4&gt;
+&lt;p&gt;函数调用表达式，即表示了  &lt;code&gt;func(1, 2)&lt;/code&gt;  这一类型的语句。callee 属性是一个表达式节点，表示函数，arguments 是一个数组，元素是表达式节点，表示函数参数列表。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface CallExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;CallExpression&amp;quot;;
+    callee: Expression;
+    arguments: [ Expression ];
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;newexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#newexpression&#34;&gt;#&lt;/a&gt; NewExpression&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;new&lt;/code&gt;  表达式。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface NewExpression &amp;lt;: CallExpression &amp;#123;
+    type: &amp;quot;NewExpression&amp;quot;;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;sequenceexpression&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#sequenceexpression&#34;&gt;#&lt;/a&gt; SequenceExpression&lt;/h4&gt;
+&lt;p&gt;这个就是逗号运算符构建的表达式（不知道确切的名称）， &lt;code&gt;expressions&lt;/code&gt;  属性为一个数组，即表示构成整个表达式，被逗号分割的多个表达式。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface SequenceExpression &amp;lt;: Expression &amp;#123;
+    type: &amp;quot;SequenceExpression&amp;quot;;
+    expressions: [ Expression ];
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;参考链接：&lt;/em&gt;&lt;br /&gt;
+&lt;em&gt;&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9naXRodWIuY29tL2phbWllYnVpbGRzL2JhYmVsLWhhbmRib29rL2Jsb2IvbWFzdGVyL3RyYW5zbGF0aW9ucy96aC1IYW5zL3BsdWdpbi1oYW5kYm9vay5tZA==&#34;&gt;https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md&lt;/span&gt;&lt;/em&gt;&lt;br /&gt;
+&lt;em&gt;&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9naXRodWIuY29tL0NvZGVMaXR0bGVQcmluY2UvYmxvZy9pc3N1ZXMvMTk=&#34;&gt;https://github.com/CodeLittlePrince/blog/issues/19&lt;/span&gt;&lt;/em&gt;&lt;br /&gt;
+&lt;em&gt;&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81ODI0MjU0MDJlOTU4YTEyOTkyNmZjYjQ=&#34;&gt;https://juejin.im/post/582425402e958a129926fcb4&lt;/span&gt;&lt;/em&gt;&lt;/p&gt;
+ ]]></description>
+        </item>
         <item>
             <guid isPermalink="true">http://jluyeyu.com/project/onlineResume/4.%20%E9%A6%96%E9%A1%B5%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/</guid>
             <title>4. 首页框架搭建</title>
@@ -1227,61 +1765,6 @@ M834 80h400000v40h-400000z&#39;/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;/span&gt;&lt;/s
 &lt;figure class=&#34;highlight javascript&#34;&gt;&lt;figcaption data-lang=&#34;javascript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt; debounce&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;fn&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;delay&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;	&lt;span class=&#34;token keyword&#34;&gt;let&lt;/span&gt; t&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;t&lt;span class=&#34;token operator&#34;&gt;!=&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token function&#34;&gt;clearTimeout&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;t&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;5&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;6&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    t&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;setTimeout&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;=&gt;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;7&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token function&#34;&gt;fn&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;call&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;8&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;delay&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;  &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;9&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;h4 id=&#34;6-节流&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#6-节流&#34;&gt;#&lt;/a&gt; 6. 节流&lt;/h4&gt;
 &lt;p&gt;节流是短时间内多次触发事件，只保留第一次时间，也是通过计时器实现的&lt;/p&gt;
 &lt;figure class=&#34;highlight javascript&#34;&gt;&lt;figcaption data-lang=&#34;javascript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt; throttle&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;fn&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;delay&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;	&lt;span class=&#34;token keyword&#34;&gt;let&lt;/span&gt; flag&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token boolean&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;flag&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    	&lt;span class=&#34;token function&#34;&gt;setTimeout&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;=&gt;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;5&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        	&lt;span class=&#34;token function&#34;&gt;fn&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;call&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;6&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        	flag&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token boolean&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;7&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    	&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;delay&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;  &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;8&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;9&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    flag&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token boolean&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;10&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt; ]]></description>
-        </item>
-        <item>
-            <guid isPermalink="true">http://jluyeyu.com/leetcode/264.%20%E4%B8%91%E6%95%B0/</guid>
-            <title>264. 丑数 II</title>
-            <link>http://jluyeyu.com/leetcode/264.%20%E4%B8%91%E6%95%B0/</link>
-            <category term="每日一题" scheme="http://jluyeyu.com/categories/leetcode/" />
-            <category term="leetcode" scheme="http://jluyeyu.com/tags/leetcode/" />
-            <category term="动态规划" scheme="http://jluyeyu.com/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" />
-            <pubDate>Fri, 03 Sep 2021 12:00:52 +0800</pubDate>
-            <description><![CDATA[ &lt;h4 id=&#34;264-丑数-ii&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#264-丑数-ii&#34;&gt;#&lt;/a&gt; &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvdWdseS1udW1iZXItaWkv&#34;&gt;264. 丑数 II&lt;/span&gt;&lt;/h4&gt;
-&lt;p&gt;难度：中等&lt;/p&gt;
-&lt;h4 id=&#34;题目&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#题目&#34;&gt;#&lt;/a&gt; 题目：&lt;/h4&gt;
-&lt;p&gt;给你一个整数  &lt;code&gt;n&lt;/code&gt;  ，请你找出并返回第  &lt;code&gt;n&lt;/code&gt;  个 &lt;strong&gt;丑数&lt;/strong&gt; 。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;丑数&lt;/strong&gt; 就是只包含质因数  &lt;code&gt;2&lt;/code&gt; 、 &lt;code&gt;3&lt;/code&gt;  和 / 或  &lt;code&gt;5&lt;/code&gt;  的正整数。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：n = 10
-输出：12
-解释：[1, 2, 3, 4, 5, 6, 8, 9, 10, 12] 是由前 10 个丑数组成的序列。
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：n = 1
-输出：1
-解释：1 通常被视为丑数。
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;1 &amp;lt;= n &amp;lt;= 1690&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;分析&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#分析&#34;&gt;#&lt;/a&gt; 分析&lt;/h4&gt;
-&lt;p&gt;丑数的判断方式&lt;/p&gt;
-&lt;figure class=&#34;highlight javascript&#34;&gt;&lt;figcaption data-lang=&#34;javascript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token keyword&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;token function-variable function&#34;&gt;judge&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token parameter&#34;&gt;num&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token comment&#34;&gt;// 能被二整除&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token keyword&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;num &lt;span class=&#34;token operator&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;===&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             num&lt;span class=&#34;token operator&#34;&gt;/=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;5&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;6&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;num&lt;span class=&#34;token operator&#34;&gt;&gt;=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;7&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;8&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             &lt;span class=&#34;token comment&#34;&gt;// 能否被 5 整除&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;9&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             &lt;span class=&#34;token keyword&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;num &lt;span class=&#34;token operator&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;5&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;===&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;10&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                 num&lt;span class=&#34;token operator&#34;&gt;/=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;11&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;12&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;13&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;num&lt;span class=&#34;token operator&#34;&gt;&gt;=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;14&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             &lt;span class=&#34;token comment&#34;&gt;// 能否被 5 整除&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;15&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             &lt;span class=&#34;token keyword&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;num &lt;span class=&#34;token operator&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;===&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;16&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                 num&lt;span class=&#34;token operator&#34;&gt;/=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;17&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;18&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;19&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;num&lt;span class=&#34;token operator&#34;&gt;===&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;20&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             &lt;span class=&#34;token keyword&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;token boolean&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;21&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;22&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;             &lt;span class=&#34;token keyword&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;token boolean&#34;&gt;false&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;23&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;         &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;24&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;     &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;三指针法：因为丑数只是因数只有 2,3,5 的数；&lt;/p&gt;
-&lt;p&gt;所以先设置一个&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;dp&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.8888799999999999em;vertical-align:-0.19444em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;p&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt; 数组表示当前已经找出并排列好的丑数数组；&lt;/p&gt;
-&lt;p&gt;再 3 个指针：&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;i,j,k&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.8888799999999999em;vertical-align:-0.19444em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34; style=&#34;margin-right:0.03148em;&#34;&gt;k&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;​ 表示 将当前已经排好的数组元素 &lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mtext&gt;，&lt;/mtext&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mtext&gt;，&lt;/mtext&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*2，*3，*5&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.68333em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.68333em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt; 所得的数组（实际上，因为所得的数字最终会加入唯一的排序数组，所以并不用真正将 3 个数组建立起来），&lt;/p&gt;
-&lt;p&gt;因为排序后数组&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mtext&gt;，&lt;/mtext&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mtext&gt;，&lt;/mtext&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*2，*3，*5&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.68333em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.68333em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt; 得到的也是已经排序数组，接下来的目的就是从这 3 个虚拟数组中的头元素中取得最小那个值；（实际上并不会出现 3 个数组）&lt;/p&gt;
-&lt;p&gt;所以关键就是如何用这 3 个指针进行选择，&lt;/p&gt;
-&lt;p&gt;实际上排序并不是在加入排序数组后才整理排序，而是每次用老元素&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mtext&gt;，&lt;/mtext&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mtext&gt;，&lt;/mtext&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*2，*3，*5&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.68333em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.68333em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt; 生成新元素的时候，选择最小的加入达到排序目的，这个时候指针移动就起到作用了，如下过程所示：&lt;/p&gt;
-&lt;p&gt;-----------------------------------------------------&lt;/p&gt;
-&lt;p&gt;已经排好的数组，先放进第一个丑数&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;:&lt;/mo&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;1:[1]&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;排好数组&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mtext&gt;：&lt;/mtext&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*2 ：[1]*2=2&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;：&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;排好数组&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mtext&gt;：&lt;/mtext&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*3 ：[1]*3=3&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;：&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;排好数组&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;mtext&gt;：&lt;/mtext&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*5 ：[1]*5=5&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;：&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;选结果中最小的数加入数组，此时明显是 2，新的排序数组为 [1,2]；&lt;/p&gt;
-&lt;p&gt;-----------------------------------------------------&lt;/p&gt;
-&lt;p&gt;已经排好的数组:[1，2]------ 此时上次结果中，2，3，5 只用到了 2；但 3 明显是这次需要加入的数；既然 2 已经加入，再去对比 2 没意义了，那么就将 （&lt;em&gt;2 的指针） [1] 转向下一位 [2]，对比 （下一个元素&lt;/em&gt; 2 和 3，5）的大小，取最小的加入；&lt;/p&gt;
-&lt;p&gt;排好数组&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mtext&gt;：&lt;/mtext&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;4&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*2 ：[2]*2=4&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;：&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;4&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;排好数组&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mtext&gt;：&lt;/mtext&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*3 ：[1]*3=3&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;：&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;排好数组&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;mtext&gt;：&lt;/mtext&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;*5 ：[1]*5=5&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;mord cjk_fallback&#34;&gt;：&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.64444em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;选结果中最小的数加入数组，此时明显是 3，新的排序数组为 [1,2,3]；&lt;/p&gt;
-&lt;p&gt;依次类推；可以看到，实际上，只需将指针进行分别移动就可以了；所以要做出 3 个指针；&lt;/p&gt;
-&lt;p&gt;-----------------------------------------------------&lt;/p&gt;
-&lt;p&gt;维护 3 个值&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;n2,n3,n5&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.8388800000000001em;vertical-align:-0.19444em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;,，表示将当前 2,3,5 对应的指针。&lt;/p&gt;
-&lt;p&gt;将&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math xmlns=&#34;http://www.w3.org/1998/Math/MathML&#34;&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mi&gt;h&lt;/mi&gt;&lt;mi mathvariant=&#34;normal&#34;&gt;.&lt;/mi&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo stretchy=&#34;false&#34;&gt;(&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;e&lt;/mi&gt;&lt;mi&gt;s&lt;/mi&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;e&lt;/mi&gt;&lt;mi&gt;s&lt;/mi&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;mo&gt;∗&lt;/mo&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;e&lt;/mi&gt;&lt;mi&gt;s&lt;/mi&gt;&lt;mo stretchy=&#34;false&#34;&gt;[&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;mo stretchy=&#34;false&#34;&gt;]&lt;/mo&gt;&lt;mo stretchy=&#34;false&#34;&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;Math.min(2*res[n2],3*res[n3],5*res[n5])&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34; style=&#34;margin-right:0.10903em;&#34;&gt;M&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;t&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;h&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34; style=&#34;margin-right:0.02778em;&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34; style=&#34;margin-right:0.02778em;&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;∗&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34; style=&#34;margin-right:0.02778em;&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord mathnormal&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt; 加入 res 中&lt;/p&gt;
-&lt;p&gt;因为可能 3 组数出现重复，所以加入时需要去重&lt;/p&gt;
-&lt;h4 id=&#34;代码&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#代码&#34;&gt;#&lt;/a&gt; 代码&lt;/h4&gt;
-&lt;figure class=&#34;highlight javascript&#34;&gt;&lt;figcaption data-lang=&#34;javascript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;token function-variable function&#34;&gt;nthUglyNumber&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token parameter&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token keyword&#34;&gt;let&lt;/span&gt; res&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token keyword&#34;&gt;let&lt;/span&gt; n2&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;n3&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;n5&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token keyword&#34;&gt;let&lt;/span&gt; i&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;5&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token keyword&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;res&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;length&lt;span class=&#34;token operator&#34;&gt;&amp;lt;&lt;/span&gt;n&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;6&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token keyword&#34;&gt;let&lt;/span&gt; val&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;Math&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;min&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;*&lt;/span&gt;res&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;n2&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;*&lt;/span&gt;res&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;n3&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;*&lt;/span&gt;res&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;n5&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;7&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;res&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;n2&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;==&lt;/span&gt;val&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;8&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            n2&lt;span class=&#34;token operator&#34;&gt;+=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;9&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;res&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;n3&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;==&lt;/span&gt;val&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;10&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            n3&lt;span class=&#34;token operator&#34;&gt;+=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;11&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;12&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            n5&lt;span class=&#34;token operator&#34;&gt;+=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;13&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;14&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;res&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;res&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;length&lt;span class=&#34;token operator&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;!=&lt;/span&gt;val&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;15&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            res&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;push&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;val&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;16&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;17&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;18&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;    &lt;span class=&#34;token keyword&#34;&gt;return&lt;/span&gt; res&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;n&lt;span class=&#34;token operator&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;19&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt; ]]></description>
         </item>
     </channel>
 </rss>
