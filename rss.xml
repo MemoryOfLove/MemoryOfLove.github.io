@@ -10,8 +10,174 @@
         </author>
         <description></description>
         <language>zh-CN</language>
-        <pubDate>Mon, 28 Feb 2022 12:00:52 +0800</pubDate>
-        <lastBuildDate>Mon, 28 Feb 2022 12:00:52 +0800</lastBuildDate>
+        <pubDate>Sun, 13 Mar 2022 17:25:52 +0800</pubDate>
+        <lastBuildDate>Sun, 13 Mar 2022 17:25:52 +0800</lastBuildDate>
+        <item>
+            <guid isPermalink="true">http://jluyeyu.com/javascript/%E4%BA%8B%E4%BB%B6%E5%A7%94%E6%89%98/</guid>
+            <title>事件委托</title>
+            <link>http://jluyeyu.com/javascript/%E4%BA%8B%E4%BB%B6%E5%A7%94%E6%89%98/</link>
+            <category term="javascript" scheme="http://jluyeyu.com/categories/javascript/" />
+            <category term="javascript" scheme="http://jluyeyu.com/tags/javascript/" />
+            <pubDate>Sun, 13 Mar 2022 17:25:52 +0800</pubDate>
+            <description><![CDATA[ &lt;h4 id=&#34;js中的事件委托&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#js中的事件委托&#34;&gt;#&lt;/a&gt; js 中的事件委托&lt;/h4&gt;
+&lt;p&gt;​	那什么叫事件委托呢？它还有一个名字叫事件代理， &lt;code&gt;JavaScript&lt;/code&gt;  高级程序设计上讲：事件委托就是利用事件冒泡，只指定一个事件处理程序，就可以管理某一类型的所有事件。那这是什么意思呢？网上的各位大牛们讲事件委托基本上都用了同一个例子，就是取快递来解释这个现象，我仔细揣摩了一下，这个例子还真是恰当，我就不去想别的例子来解释了，借花献佛，我摘过来，大家认真领会一下事件委托到底是一个什么原理：&lt;/p&gt;
+&lt;p&gt;​	有三个同事预计会在周一收到快递。为签收快递，有两种办法：一是三个人在公司门口等快递；二是委托给前台 MM 代为签收。现实当中，我们大都采用委托的方案（公司也不会容忍那么多员工站在门口就为了等快递）。前台收到快递后，她会判断收件人是谁，然后按照收件人的要求签收，甚至代为付款。这种方案还有一个优势，那就是即使公司里来了新员工（不管多少），前台也会在收到寄给新员工的快递后核实并代为签收。&lt;/p&gt;
+&lt;p&gt;​	这里其实还有 2 层意思的：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;第一，现在委托前台的同事是可以代为签收的，即程序中的现有的 &lt;code&gt;dom&lt;/code&gt;  节点是有事件的；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;第二，新员工也是可以被前台代为签收的，即程序中新添加的 &lt;code&gt;dom&lt;/code&gt;  节点也是有事件的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;为什么要用事件委托&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#为什么要用事件委托&#34;&gt;#&lt;/a&gt; 为什么要用事件委托：&lt;/h4&gt;
+&lt;p&gt;一般来说， &lt;code&gt;dom&lt;/code&gt;  需要有事件处理程序，我们都会直接给它设事件处理程序就好了，那如果是很多的 &lt;code&gt;dom&lt;/code&gt;  需要添加事件处理呢？比如我们有 100 个 &lt;code&gt;li&lt;/code&gt; ，每个 &lt;code&gt;li&lt;/code&gt;  都有相同的 &lt;code&gt;click&lt;/code&gt;  点击事件，可能我们会用 &lt;code&gt;for&lt;/code&gt;  循环的方法，来遍历所有的 &lt;code&gt;li&lt;/code&gt; ，然后给它们添加事件，那这么做会存在什么影响呢？&lt;/p&gt;
+&lt;p&gt;在 JavaScript 中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能，因为需要不断的与 &lt;code&gt;dom&lt;/code&gt;  节点进行交互，访问 &lt;code&gt;dom&lt;/code&gt;  的次数越多，引起浏览器重绘与重排的次数也就越多，就会延长整个页面的交互就绪时间，这就是为什么性能优化的主要思想之一就是减少 &lt;code&gt;dom&lt;/code&gt;  操作的原因；如果要用事件委托，就会将所有的操作放到 &lt;code&gt;js&lt;/code&gt;  程序里面，与 &lt;code&gt;dom&lt;/code&gt;  的操作就只需要交互一次，这样就能大大的减少与 &lt;code&gt;dom&lt;/code&gt;  的交互次数，提高性能；&lt;/p&gt;
+&lt;p&gt;每个函数都是一个对象，是对象就会占用内存，对象越多，内存占用率就越大，自然性能就越差了（内存不够用，是硬伤，哈哈），比如上面的 100 个 &lt;code&gt;li&lt;/code&gt; ，就要占用 100 个内存空间，如果是 1000 个，10000 个呢，那只能说呵呵了，如果用事件委托，那么我们就可以只对它的父级（如果只有一个父级）这一个对象进行操作，这样我们就需要一个内存空间就够了，是不是省了很多，自然性能就会更好。&lt;/p&gt;
+&lt;h4 id=&#34;事件委托的原理&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#事件委托的原理&#34;&gt;#&lt;/a&gt; 事件委托的原理：&lt;/h4&gt;
+&lt;p&gt;事件委托是利用事件的冒泡原理来实现的，何为事件冒泡呢？就是事件从最深的节点开始，然后逐步向上传播事件，举个例子：页面上有这么一个节点树， &lt;code&gt;div&amp;gt;ul&amp;gt;li&amp;gt;a&lt;/code&gt; ; 比如给最里面的 &lt;code&gt;a&lt;/code&gt;  加一个 &lt;code&gt;click&lt;/code&gt;  点击事件，那么这个事件就会一层一层的往外执行，执行顺序 &lt;code&gt;a&amp;gt;li&amp;gt;ul&amp;gt;div&lt;/code&gt; ，有这样一个机制，那么我们给最外面的 &lt;code&gt;div&lt;/code&gt;  加点击事件，那么里面的 &lt;code&gt;ul，li，a&lt;/code&gt;  做点击事件的时候，都会冒泡到最外层的 &lt;code&gt;div&lt;/code&gt;  上，所以都会触发，这就是事件委托，委托它们父级代为执行事件。&lt;/p&gt;
+&lt;h4 id=&#34;事件委托怎么实现&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#事件委托怎么实现&#34;&gt;#&lt;/a&gt; 事件委托怎么实现：&lt;/h4&gt;
+&lt;p&gt;终于到了本文的核心部分了，哈哈，在介绍事件委托的方法之前，我们先来看一段一般方法的例子：&lt;/p&gt;
+&lt;p&gt;子节点实现相同的功能：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;ul id=&amp;quot;ul1&amp;quot;&amp;gt;
+    &amp;lt;li&amp;gt;111&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;222&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;333&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;444&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现功能是点击 &lt;code&gt;li&lt;/code&gt; ，弹出 123：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;window.onload = function()&amp;#123;
+    var oUl = document.getElementById(&amp;quot;ul1&amp;quot;);
+    var aLi = oUl.getElementsByTagName(&#39;li&#39;);
+    for(var i=0;i&amp;lt;aLi.length;i++)&amp;#123;
+        aLi[i].onclick = function()&amp;#123;
+            alert(123);
+        &amp;#125;
+    &amp;#125;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上面的代码的意思很简单，相信很多人都是这么实现的，我们看看有多少次的 &lt;code&gt;dom&lt;/code&gt;  操作，首先要找到 &lt;code&gt;ul&lt;/code&gt; ，然后遍历 &lt;code&gt;li&lt;/code&gt; ，然后点击 &lt;code&gt;li&lt;/code&gt;  的时候，又要找一次目标的 &lt;code&gt;li&lt;/code&gt;  的位置，才能执行最后的操作，每次点击都要找一次 &lt;code&gt;li&lt;/code&gt; ；&lt;/p&gt;
+&lt;p&gt;那么我们用事件委托的方式做又会怎么样呢？&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;window.onload = function()&amp;#123;
+    var oUl = document.getElementById(&amp;quot;ul1&amp;quot;);
+   oUl.onclick = function()&amp;#123;
+        alert(123);
+    &amp;#125;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里用父级 ul 做事件处理，当 li 被点击时，由于冒泡原理，事件就会冒泡到 ul 上，因为 ul 上有点击事件，所以事件就会触发，当然，这里当点击 ul 的时候，也是会触发的，那么问题就来了，如果我想让事件代理的效果跟直接给节点的事件效果一样怎么办，比如说只有点击 li 才会触发，不怕，我们有绝招：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Event&lt;/code&gt;  对象提供了一个属性叫 &lt;code&gt;target&lt;/code&gt; ，可以返回事件的目标节点，我们成为事件源，也就是说， &lt;code&gt;target&lt;/code&gt;  就可以表示为当前的事件操作的 &lt;code&gt;dom&lt;/code&gt; ，但是不是真正操作 &lt;code&gt;dom&lt;/code&gt; ，当然，这个是有兼容性的，标准浏览器用 ev.target，IE 浏览器用 event.srcElement，此时只是获取了当前节点的位置，并不知道是什么节点名称，这里我们用 &lt;code&gt;nodeName&lt;/code&gt;  来获取具体是什么标签名，这个返回的是一个大写的，我们需要转成小写再做比较（习惯问题）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;window.onload = function()&amp;#123;
+　　var oUl = document.getElementById(&amp;quot;ul1&amp;quot;);
+　　oUl.onclick = function(ev)&amp;#123;
+　　　　var ev = ev || window.event;
+　　　　var target = ev.target || ev.srcElement;
+　　　　if(target.nodeName.toLowerCase() == &#39;li&#39;)&amp;#123;
+　 　　　　　　 alert(123);
+　　　　　　　  alert(target.innerHTML);
+　　　　&amp;#125;
+　　&amp;#125;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样改下就只有点击 &lt;code&gt;li&lt;/code&gt;  会触发事件了，且每次只执行一次 &lt;code&gt;dom&lt;/code&gt;  操作，如果 &lt;code&gt;li&lt;/code&gt;  数量很多的话，将大大减少 &lt;code&gt;dom&lt;/code&gt;  的操作，优化的性能可想而知！&lt;/p&gt;
+&lt;p&gt;上面的例子是说 &lt;code&gt;li&lt;/code&gt;  操作的是同样的效果，要是每个 &lt;code&gt;li&lt;/code&gt;  被点击的效果都不一样，那么用事件委托还有用吗？&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div id=&amp;quot;box&amp;quot;&amp;gt;
+        &amp;lt;input type=&amp;quot;button&amp;quot; id=&amp;quot;add&amp;quot; value=&amp;quot;添加&amp;quot; /&amp;gt;
+        &amp;lt;input type=&amp;quot;button&amp;quot; id=&amp;quot;remove&amp;quot; value=&amp;quot;删除&amp;quot; /&amp;gt;
+        &amp;lt;input type=&amp;quot;button&amp;quot; id=&amp;quot;move&amp;quot; value=&amp;quot;移动&amp;quot; /&amp;gt;
+        &amp;lt;input type=&amp;quot;button&amp;quot; id=&amp;quot;select&amp;quot; value=&amp;quot;选择&amp;quot; /&amp;gt;
+    &amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;window.onload = function()&amp;#123;
+            var Add = document.getElementById(&amp;quot;add&amp;quot;);
+            var Remove = document.getElementById(&amp;quot;remove&amp;quot;);
+            var Move = document.getElementById(&amp;quot;move&amp;quot;);
+            var Select = document.getElementById(&amp;quot;select&amp;quot;);
+            
+            Add.onclick = function()&amp;#123;
+                alert(&#39;添加&#39;);
+            &amp;#125;;
+            Remove.onclick = function()&amp;#123;
+                alert(&#39;删除&#39;);
+            &amp;#125;;
+            Move.onclick = function()&amp;#123;
+                alert(&#39;移动&#39;);
+            &amp;#125;;
+            Select.onclick = function()&amp;#123;
+                alert(&#39;选择&#39;);
+            &amp;#125;
+            
+        &amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上面实现的效果我就不多说了，很简单，4 个按钮，点击每一个做不同的操作，那么至少需要 4 次 &lt;code&gt;dom&lt;/code&gt;  操作，如果用事件委托，能进行优化吗？&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;window.onload = function()&amp;#123;
+            var oBox = document.getElementById(&amp;quot;box&amp;quot;);
+            oBox.onclick = function (ev) &amp;#123;
+                var ev = ev || window.event;
+                var target = ev.target || ev.srcElement;
+                if(target.nodeName.toLocaleLowerCase() == &#39;input&#39;)&amp;#123;
+                    switch(target.id)&amp;#123;
+                        case &#39;add&#39; :
+                            alert(&#39;添加&#39;);
+                            break;
+                        case &#39;remove&#39; :
+                            alert(&#39;删除&#39;);
+                            break;
+                        case &#39;move&#39; :
+                            alert(&#39;移动&#39;);
+                            break;
+                        case &#39;select&#39; :
+                            alert(&#39;选择&#39;);
+                            break;
+                    &amp;#125;
+                &amp;#125;
+            &amp;#125;
+            
+        &amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用事件委托就可以只用一次 &lt;code&gt;dom&lt;/code&gt;  操作就能完成所有的效果，比上面的性能肯定是要好一些的&lt;/p&gt;
+&lt;p&gt;现在讲的都是 &lt;code&gt;document&lt;/code&gt;  加载完成的现有 &lt;code&gt;dom&lt;/code&gt;  节点下的操作，那么如果是新增的节点，新增的节点会有事件吗？也就是说，一个新员工来了，他能收到快递吗？&lt;/p&gt;
+&lt;p&gt;看一下正常的添加节点的方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;input type=&amp;quot;button&amp;quot; name=&amp;quot;&amp;quot; id=&amp;quot;btn&amp;quot; value=&amp;quot;添加&amp;quot; /&amp;gt;
+    &amp;lt;ul id=&amp;quot;ul1&amp;quot;&amp;gt;
+        &amp;lt;li&amp;gt;111&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;222&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;333&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;444&amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在是移入 &lt;code&gt;li&lt;/code&gt; ， &lt;code&gt;li&lt;/code&gt;  变红，移出 &lt;code&gt;li&lt;/code&gt; ， &lt;code&gt;li&lt;/code&gt;  变白，这么一个效果，然后点击按钮，可以向 &lt;code&gt;ul&lt;/code&gt;  中添加一个 &lt;code&gt;li&lt;/code&gt;  子节点&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;window.onload = function()&amp;#123;
+            var oBtn = document.getElementById(&amp;quot;btn&amp;quot;);
+            var oUl = document.getElementById(&amp;quot;ul1&amp;quot;);
+            var aLi = oUl.getElementsByTagName(&#39;li&#39;);
+            var num = 4;
+            
+            //鼠标移入变红，移出变白
+            for(var i=0; i&amp;lt;aLi.length;i++)&amp;#123;
+                aLi[i].onmouseover = function()&amp;#123;
+                    this.style.background = &#39;red&#39;;
+                &amp;#125;;
+                aLi[i].onmouseout = function()&amp;#123;
+                    this.style.background = &#39;#fff&#39;;
+                &amp;#125;
+            &amp;#125;
+            //添加新节点
+            oBtn.onclick = function()&amp;#123;
+                num++;
+                var oLi = document.createElement(&#39;li&#39;);
+                oLi.innerHTML = 111*num;
+                oUl.appendChild(oLi);
+            &amp;#125;;
+        &amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这是一般的做法，但是你会发现，新增的 &lt;code&gt;li&lt;/code&gt;  是没有事件的，说明添加子节点的时候，事件没有一起添加进去，这不是我们想要的结果，那怎么做呢？一般的解决方案会是这样，将 for 循环用一个函数包起来，命名为 &lt;code&gt;mHover&lt;/code&gt; ，如下：&lt;/p&gt;
+&lt;figure class=&#34;highlight js&#34;&gt;&lt;figcaption data-lang=&#34;JavaScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;window&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function-variable function&#34;&gt;onload&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; oBtn &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; document&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;getElementById&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#34;btn&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; oUl &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; document&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;getElementById&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#34;ul1&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; aLi &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; oUl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;getElementsByTagName&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;li&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;5&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; num &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;6&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;7&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;mHover&lt;/span&gt; &lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;8&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token comment&#34;&gt;// 鼠标移入变红，移出变白&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;9&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;for&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; i&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;token number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt; i&lt;span class=&#34;token operator&#34;&gt;&amp;lt;&lt;/span&gt;aLi&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;length&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;i&lt;span class=&#34;token operator&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;10&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                    aLi&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;i&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function-variable function&#34;&gt;onmouseover&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;11&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                        &lt;span class=&#34;token keyword&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;style&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;background &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#39;red&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;12&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                    &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;13&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                    aLi&lt;span class=&#34;token punctuation&#34;&gt;[&lt;/span&gt;i&lt;span class=&#34;token punctuation&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function-variable function&#34;&gt;onmouseout&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;14&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                        &lt;span class=&#34;token keyword&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;style&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;background &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#39;#fff&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;15&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                    &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;16&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;17&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;18&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token function&#34;&gt;mHover&lt;/span&gt; &lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;19&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token comment&#34;&gt;// 添加新节点&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;20&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            oBtn&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function-variable function&#34;&gt;onclick&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;21&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                num&lt;span class=&#34;token operator&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;22&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; oLi &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; document&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;createElement&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;li&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;23&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                oLi&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;innerHTML &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;111&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;*&lt;/span&gt;num&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;24&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                oUl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;appendChild&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;oLi&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;25&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token function&#34;&gt;mHover&lt;/span&gt; &lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;26&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;27&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;虽然功能实现了，看着还挺好，但实际上无疑是又增加了一个 &lt;code&gt;dom&lt;/code&gt;  操作，在优化性能方面是不可取的，那么有事件委托的方式，能做到优化吗？&lt;/p&gt;
+&lt;figure class=&#34;highlight js&#34;&gt;&lt;figcaption data-lang=&#34;JavaScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;window&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function-variable function&#34;&gt;onload&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; oBtn &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; document&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;getElementById&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#34;btn&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; oUl &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; document&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;getElementById&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#34;ul1&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; aLi &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; oUl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;getElementsByTagName&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;li&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;5&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; num &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;6&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;7&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token comment&#34;&gt;// 事件委托，添加的子元素也有事件&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;8&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            oUl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function-variable function&#34;&gt;onmouseover&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token parameter&#34;&gt;ev&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;9&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; ev &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; ev &lt;span class=&#34;token operator&#34;&gt;||&lt;/span&gt; window&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;event&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;10&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; target &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; ev&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;target &lt;span class=&#34;token operator&#34;&gt;||&lt;/span&gt; ev&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;srcElement&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;11&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;target&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;nodeName&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;toLowerCase&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#39;li&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;12&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                    target&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;style&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;background &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;red&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;13&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;14&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;15&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;16&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            oUl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function-variable function&#34;&gt;onmouseout&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token parameter&#34;&gt;ev&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;17&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; ev &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; ev &lt;span class=&#34;token operator&#34;&gt;||&lt;/span&gt; window&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;event&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;18&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; target &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; ev&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;target &lt;span class=&#34;token operator&#34;&gt;||&lt;/span&gt; ev&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;srcElement&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;19&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;target&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;nodeName&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;toLowerCase&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#39;li&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;20&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                    target&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;style&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;background &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;#fff&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;21&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;22&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;23&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;24&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;25&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token comment&#34;&gt;// 添加新节点&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;26&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            oBtn&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function-variable function&#34;&gt;onclick&lt;/span&gt; &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token keyword&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;27&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                num&lt;span class=&#34;token operator&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;28&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                &lt;span class=&#34;token keyword&#34;&gt;var&lt;/span&gt; oLi &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; document&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;createElement&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;li&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;29&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                oLi&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;innerHTML &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;111&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;*&lt;/span&gt;num&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;30&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;                oUl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;appendChild&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;oLi&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;31&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;            &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;32&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;        &lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;看，上面是用事件委托的方式，新添加的子元素是带有事件效果的，我们可以发现，当用事件委托的时候，根本就不需要去遍历元素的子节点，只需要给父级元素添加事件就好了，其他的都是在 &lt;code&gt;js&lt;/code&gt;  里面的执行，这样可以大大的减少 &lt;code&gt;dom&lt;/code&gt;  操作，这才是事件委托的精髓所在。&lt;/p&gt;
+ ]]></description>
+        </item>
         <item>
             <guid isPermalink="true">http://jluyeyu.com/leetcode/6.%20Z%E5%AD%97%E5%BD%A2%E5%8F%98%E6%8D%A2/</guid>
             <title>Z字形变换</title>
@@ -2345,32 +2511,6 @@ let K3: keyof symbol; // let K1: &amp;quot;valueOf&amp;quot;
 &lt;li&gt;纯表现的元素： &lt;code&gt;basefont、big、center、font、s、strike、tt、u&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;对可用性产生负面影响的元素： &lt;code&gt;frame、frameset、noframes&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
- ]]></description>
-        </item>
-        <item>
-            <guid isPermalink="true">http://jluyeyu.com/interview/html/%E8%AF%B4%E8%AF%B4%E4%BD%A0%E5%AF%B9%20html%20%E8%AF%AD%E4%B9%89%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/</guid>
-            <title>说说你对 html 语义化的理解</title>
-            <link>http://jluyeyu.com/interview/html/%E8%AF%B4%E8%AF%B4%E4%BD%A0%E5%AF%B9%20html%20%E8%AF%AD%E4%B9%89%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/</link>
-            <category term="interview" scheme="http://jluyeyu.com/categories/interview/" />
-            <category term="html" scheme="http://jluyeyu.com/categories/interview/html/" />
-            <category term="html" scheme="http://jluyeyu.com/tags/html/" />
-            <category term="面试" scheme="http://jluyeyu.com/tags/%E9%9D%A2%E8%AF%95/" />
-            <pubDate>Thu, 06 Jan 2022 16:00:52 +0800</pubDate>
-            <description><![CDATA[ &lt;h3 id=&#34;说说你对-html-语义化的理解&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#说说你对-html-语义化的理解&#34;&gt;#&lt;/a&gt; 说说你对 html 语义化的理解&lt;/h3&gt;
-&lt;h4 id=&#34;为什么需要语义化语义化的优点&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#为什么需要语义化语义化的优点&#34;&gt;#&lt;/a&gt; 为什么需要语义化，语义化的优点：&lt;/h4&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;结构清晰：html 语义化让页面的内容结构化，即使在没有样式 CSS 情况下也以一种文档格式显示，并且是容易阅读的。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;SEO：有利于 SEO ，可以让搜索引擎更好地获取到更多有效信息，搜索引擎的爬虫依赖于标签来确定上下文和各个关键字的权重，有效提升网页的搜索量。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;可维护性：使阅读源代码的人对网站更容易将网站分块，便于阅读维护理解。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h4 id=&#34;常见的语义化标签&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#常见的语义化标签&#34;&gt;#&lt;/a&gt; 常见的语义化标签&lt;/h4&gt;
-&lt;p&gt;&lt;img data-src=&#34;https://yeyu-blog.oss-cn-beijing.aliyuncs.com/article_images/html%E8%AF%AD%E4%B9%89%E5%8C%96%E6%A0%87%E7%AD%BE.png&#34; alt=&#34;html语义化标签&#34; /&gt;&lt;/p&gt;
  ]]></description>
         </item>
         <item>
