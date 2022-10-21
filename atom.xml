@@ -1437,9 +1437,9 @@ let K3: keyof symbol; // let K1: &amp;quot;valueOf&amp;quot;
         <updated>2022-01-10T03:30:52.000Z</updated>
     </entry>
     <entry>
-        <id>http://jluyeyu.com/javascript/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91%E5%88%9D%E8%AF%86/</id>
+        <id>http://jluyeyu.com/javascript/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AA%E5%89%8D%E7%AB%AFjs%E7%BB%83%E4%B9%A0%E7%BD%91%E7%AB%99/</id>
         <title>抽象语法树ast初识</title>
-        <link rel="alternate" href="http://jluyeyu.com/javascript/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91%E5%88%9D%E8%AF%86/"/>
+        <link rel="alternate" href="http://jluyeyu.com/javascript/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AA%E5%89%8D%E7%AB%AFjs%E7%BB%83%E4%B9%A0%E7%BD%91%E7%AB%99/"/>
         <content type="html">&lt;h2 id=&#34;为什么要了解ast&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#为什么要了解ast&#34;&gt;#&lt;/a&gt; 为什么要了解 AST&lt;/h2&gt;
 &lt;p&gt;如果你想了解 js 编译执行的原理，那么你就得了解 AST，目前前端常用的一些插件或者工具，比如说 javascript 转译、代码压缩、css 预处理器、elint、pretiier 等功能的实现，都是建立在 AST 的基础之上。&lt;/p&gt;
 &lt;p&gt;在线解析 ast 的网站:&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9hc3RleHBsb3Jlci5uZXQv&#34;&gt;https://astexplorer.net/&lt;/span&gt;&lt;/p&gt;
@@ -1975,9 +1975,9 @@ let K3: keyof symbol; // let K1: &amp;quot;valueOf&amp;quot;
         <updated>2022-01-08T11:35:52.000Z</updated>
     </entry>
     <entry>
-        <id>http://jluyeyu.com/javascript/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AA%E5%89%8D%E7%AB%AFjs%E7%BB%83%E4%B9%A0%E7%BD%91%E7%AB%99/</id>
+        <id>http://jluyeyu.com/javascript/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91%E5%88%9D%E8%AF%86/</id>
         <title>抽象语法树ast初识</title>
-        <link rel="alternate" href="http://jluyeyu.com/javascript/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AA%E5%89%8D%E7%AB%AFjs%E7%BB%83%E4%B9%A0%E7%BD%91%E7%AB%99/"/>
+        <link rel="alternate" href="http://jluyeyu.com/javascript/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91%E5%88%9D%E8%AF%86/"/>
         <content type="html">&lt;h2 id=&#34;为什么要了解ast&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#为什么要了解ast&#34;&gt;#&lt;/a&gt; 为什么要了解 AST&lt;/h2&gt;
 &lt;p&gt;如果你想了解 js 编译执行的原理，那么你就得了解 AST，目前前端常用的一些插件或者工具，比如说 javascript 转译、代码压缩、css 预处理器、elint、pretiier 等功能的实现，都是建立在 AST 的基础之上。&lt;/p&gt;
 &lt;p&gt;在线解析 ast 的网站:&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9hc3RleHBsb3Jlci5uZXQv&#34;&gt;https://astexplorer.net/&lt;/span&gt;&lt;/p&gt;
