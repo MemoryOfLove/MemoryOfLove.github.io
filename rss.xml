@@ -565,7 +565,7 @@ ControlMode：（默认WifiMode::OfdmRate6Mbps）specify a mode for all ‘reque
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;中文书籍，入门用的，很杂但内容不深&lt;br /&gt;
-&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC84ZDQxOWRhZTFmOWY=&#34;&gt; ns3 网络模拟器基础及应用&lt;/span&gt;&lt;/p&gt;
+&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly95ZXl1LWJsb2cub3NzLWNuLWJlaWppbmcuYWxpeXVuY3MuY29tL3NoYXJlL05TLTMlRTclQkQlOTElRTclQkIlOUMlRTYlQTglQTElRTYlOEIlOUYlRTUlOTklQTglRTUlOUYlQkElRTclQTElODAlRTQlQjglOEUlRTUlQkElOTQlRTclOTQlQTgucGRm&#34;&gt; ns3 网络模拟器基础及应用&lt;/span&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;ns3 强化学习模块&lt;/p&gt;
