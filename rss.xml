@@ -10,8 +10,102 @@
         </author>
         <description></description>
         <language>zh-CN</language>
-        <pubDate>Thu, 01 Feb 2024 17:25:52 +0800</pubDate>
-        <lastBuildDate>Thu, 01 Feb 2024 17:25:52 +0800</lastBuildDate>
+        <pubDate>Mon, 08 Apr 2024 09:57:52 +0800</pubDate>
+        <lastBuildDate>Mon, 08 Apr 2024 09:57:52 +0800</lastBuildDate>
+        <item>
+            <guid isPermalink="true">http://jluyeyu.com/react/react%E5%9B%BD%E9%99%85%E5%8C%96%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/</guid>
+            <title>react国际化的常用方法</title>
+            <link>http://jluyeyu.com/react/react%E5%9B%BD%E9%99%85%E5%8C%96%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/</link>
+            <category term="react" scheme="http://jluyeyu.com/categories/react/" />
+            <category term="react" scheme="http://jluyeyu.com/tags/react/" />
+            <pubDate>Mon, 08 Apr 2024 09:57:52 +0800</pubDate>
+            <description><![CDATA[ &lt;h1 id=&#34;react国际化的常用方法&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#react国际化的常用方法&#34;&gt;#&lt;/a&gt; react 国际化的常用方法&lt;/h1&gt;
+&lt;h2 id=&#34;背景&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#背景&#34;&gt;#&lt;/a&gt; 背景：&lt;/h2&gt;
+&lt;p&gt;国际化是企业项目中经常遇到的一个功能，虽然很多成熟的框架都内置了国际化的解决方案，但可能实际开发的过程中出于各种考虑可能不会用太重的框架，这就导致了国际化等功能就需要自己来搭了。&lt;/p&gt;
+&lt;h2 id=&#34;调研&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#调研&#34;&gt;#&lt;/a&gt; 调研&lt;/h2&gt;
+&lt;p&gt;首先，肯定是找第三方解决方案，React 国际化框架有多个选择，以下是几个常用的框架及其特点，这些框架都有详细的官方文档和示例，可以根据具体需求选择适合的框架进行 React 国际化的开发。&lt;/p&gt;
+&lt;h3 id=&#34;react-i18next&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#react-i18next&#34;&gt;#&lt;/a&gt; react-i18next&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;官网：&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9yZWFjdC5pMThuZXh0LmNvbS8=&#34;&gt;https://react.i18next.com/&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;特点&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#特点&#34;&gt;#&lt;/a&gt; 特点：&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;简单易用：提供了简单的 API 和 React 组件，使得国际化变得简单易懂。&lt;/li&gt;
+&lt;li&gt;多种语言支持：支持多种语言，可以轻松地添加和切换不同的语言。&lt;/li&gt;
+&lt;li&gt;动态加载：可以按需加载翻译文件，减少应用程序的初始加载时间。&lt;/li&gt;
+&lt;li&gt;可扩展性：支持插件系统，可以根据需要扩展功能。&lt;/li&gt;
+&lt;li&gt;集成友好：与 React 生态系统中的其他库（如 Redux）和工具（如 Webpack）集成良好。&lt;/li&gt;
+&lt;li&gt;自带切换语言方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;react-intl&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#react-intl&#34;&gt;#&lt;/a&gt; react-intl&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;官网：&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9mb3JtYXRqcy5pby9kb2NzL3JlYWN0LWludGwv&#34;&gt;https://formatjs.io/docs/react-intl/&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;特点-2&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#特点-2&#34;&gt;#&lt;/a&gt; 特点：&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;全面的国际化支持：提供了丰富的国际化功能，包括日期、时间、数字格式化等。&lt;/li&gt;
+&lt;li&gt;多语言支持：支持多种语言，并且可以根据用户的语言环境自动选择正确的翻译文本。&lt;/li&gt;
+&lt;li&gt;本地化支持：支持本地化内容，如货币符号、时间格式等。&lt;/li&gt;
+&lt;li&gt;翻译管理：提供了工具和 API 来管理翻译文本，包括提取和更新翻译文件。&lt;/li&gt;
+&lt;li&gt;高性能：使用了 React 的虚拟 DOM 和优化技术，提供了高性能的国际化支持。&lt;/li&gt;
+&lt;li&gt;非组件使用困难，不自带切换方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;react-intl-universal&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#react-intl-universal&#34;&gt;#&lt;/a&gt; react-intl-universal&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;官网：&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9naXRodWIuY29tL2FsaWJhYmEvcmVhY3QtaW50bC11bml2ZXJzYWw=&#34;&gt;GitHub - alibaba/react-intl-universal: Internationalize React apps. Not only for Component but also for Vanilla JS.&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;特点-3&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#特点-3&#34;&gt;#&lt;/a&gt; 特点：&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;采用了 &lt;code&gt;与组件无关&lt;/code&gt; 的方法来实现国际化。国际化的本质其实就是将我们预先设置好的不同语言的句子按照语言环境显示在页面上。不只支持组件中使用， &lt;code&gt;Vanilla JS&lt;/code&gt;  也适用。&lt;/li&gt;
+&lt;li&gt;提供了丰富的国际化功能，包括日期、时间、数字格式化等。&lt;/li&gt;
+&lt;li&gt;多语言支持：支持多种语言，并且可以根据用户的语言环境自动选择正确的翻译文本。&lt;/li&gt;
+&lt;li&gt;本地化支持：支持本地化内容，如货币符号、时间格式等。&lt;/li&gt;
+&lt;li&gt;不自带切换方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;使用&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#使用&#34;&gt;#&lt;/a&gt; 使用&lt;/h2&gt;
+&lt;p&gt;不同的国际化方案都大同小异，这里仅介绍第三种 &lt;code&gt;react-intl-universal&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;i18n&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#i18n&#34;&gt;#&lt;/a&gt; i18n&lt;/h3&gt;
+&lt;p&gt;首先来看一下它的技术功能： &lt;code&gt;国际化&lt;/code&gt; &lt;br /&gt;
+ react-intl-universal 采用了 &lt;code&gt;与组件无关&lt;/code&gt; 的方法来实现国际化。国际化的本质其实就是将我们预先设置好的不同语言的句子按照语言环境显示在页面上。&lt;/p&gt;
+&lt;figure class=&#34;highlight shell&#34;&gt;&lt;figcaption data-lang=&#34;Bash&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;import&lt;/span&gt; intl from &lt;span class=&#34;token string&#34;&gt;&#39;react-intl-universal&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;通过 &lt;code&gt;intl&lt;/code&gt;  这个对象来实现初始化和国际化处理。我们可以认为这个 &lt;code&gt;intl是一个单例对象&lt;/code&gt; 。我们在 App 启动的时候对其进行初始化，尔后在别的地方再次导入的时候仍然是一个已经初始化过的对象。在这种情况下，国际化处理就会变得异常简单。其次就是准备多语言句子了，传统的在前端处理这个问题是将不同语言的句子放在不同的 json 文件中再导出，文件结构如下：&lt;br /&gt;
+&lt;img data-src=&#34;https://segmentfault.com/img/bVbkulq?w=384&amp;amp;h=132&#34; alt=&#34;clipboard.png&#34; title=&#34;clipboard.png&#34; /&gt;&lt;br /&gt;
+ 这样我们就可以在 App 启动或者切换语言的时候导入相应的 json 对象了。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;首先是 API 介绍&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;intl 对象主要有 &lt;code&gt;三个常用的用于国际化处理&lt;/code&gt; 的 API， &lt;code&gt;determineLocale、init、get&lt;/code&gt; 。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;determineLocale&lt;br /&gt;
+ 看到方法名就应该知道它是用来干什么了。它用来确定在整个体系中使用的是哪种语言。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight js&#34;&gt;&lt;figcaption data-lang=&#34;JavaScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token keyword&#34;&gt;let&lt;/span&gt; currentLocale &lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt; intl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;determineLocale&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt; urlLocaleKey&lt;span class=&#34;token operator&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;lang&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt; cookieLocaleKey&lt;span class=&#34;token operator&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;lang&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;react-intl-universal 确定语言的方式有三种，一个是通过 &lt;code&gt;urlLocaleKey&lt;/code&gt; ，即 &lt;code&gt;lang&lt;/code&gt;  关键字从 &lt;code&gt;url&lt;/code&gt;  中获取是哪种语言。比如：&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9saW5rLnNlZ21lbnRmYXVsdC5jb20vP2VuYz12VVg2JTJCUTNRdnRWVkk1QTJzczRzUlElM0QlM0QubjZhQ0pYM2V5ZHV6ek1lSUhzV3NublZDQ29lZ0tXbk4zbHRuTkkzYVdOZyUzRA==&#34;&gt;http://localhost?lang=en-US&lt;/span&gt;，因为 lang 对应的值是 en_US，所以语言为英文。其次是从 Cookie 获取，因为 Cookie 也是以键值对形式存储的，所以会检查当前域下的 Cookie 是否有对应的 &lt;code&gt;lang&lt;/code&gt; 。如果上述两种都没有，那么会默认使用 &lt;code&gt;浏览器当前的语言类型&lt;/code&gt; 。当然上述的 urlLocaleKey 和 cookieLocaleKey 是 &lt;code&gt;可以自定义&lt;/code&gt; 的，不是固定的 &lt;code&gt;lang&lt;/code&gt; .&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;init&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;init 方法即用来初始化 intl 对象。初始化参数主要是两个，一个是 currentLocale 即当前的语言，另一个是 locales 即当前语言对应的 json 对象，比如 &lt;code&gt;&amp;#123;&amp;quot;en-US&amp;quot;:&amp;#123;&amp;quot;key1&amp;quot;:&amp;quot;value1&amp;quot;&amp;#125;&lt;/code&gt;  或者  &lt;code&gt;&amp;#123;&amp;quot;zh-CN&amp;quot;:&amp;#123;&amp;quot;key1&amp;quot;:&amp;quot;值1&amp;quot;&amp;#125;&amp;#125;&lt;/code&gt; 。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;get&lt;br /&gt;
+ &lt;code&gt;get&lt;/code&gt;  方法就相对简单，就是根据键去 intl 中获取对应的值，这里不做过多解释。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;前面说了 react-intl-universal 不仅仅可以用来做国际化处理，还可以用来做简单的文本格式化处理。下面我们列举几个常用的。&lt;/p&gt;
+&lt;h3 id=&#34;html-snippet&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#html-snippet&#34;&gt;#&lt;/a&gt; Html Snippet&lt;/h3&gt;
+&lt;p&gt;假如我们的 json 文件中有这么一段&lt;/p&gt;
+&lt;figure class=&#34;highlight ts&#34;&gt;&lt;figcaption data-lang=&#34;TypeScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token operator&#34;&gt;...&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token string&#34;&gt;&#34;red&#34;&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;&amp;lt;p style=&#39;color:red&#39;&gt;红色&amp;lt;/p&gt;&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token operator&#34;&gt;...&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;如果我们直接用 get 方法获取的话，那么会直接把 &lt;code&gt;&amp;lt;p style=&#39;color:red&#39;&amp;gt;红色&amp;lt;/p&amp;gt;&lt;/code&gt;  给打印出来。如果我们想将它以 html 片段的形式打印出来的话，就使用 &lt;code&gt;getHTML&lt;/code&gt;  方法，它在获取到句子的时候会进行解析并生成最终的 &lt;code&gt;Html Snippet&lt;/code&gt; 。&lt;/p&gt;
+&lt;h3 id=&#34;default-message&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#default-message&#34;&gt;#&lt;/a&gt; Default Message&lt;/h3&gt;
+&lt;p&gt;缺省值其实就是默认值，是对于 json 键值对的默认值。将入我们去获取一个 json 中没有的键值对那么系统就会报错。如何去规避这个问题呢？react-intl-universal 给我们提供了这样一个方法：&lt;/p&gt;
+&lt;figure class=&#34;highlight js&#34;&gt;&lt;figcaption data-lang=&#34;JavaScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;intl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;not-exist-key&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;defaultMessage&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;default message&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;这是一个链式调用。如果 json 中没有 &lt;code&gt;not-exist-key&lt;/code&gt;  这个键，那就会默认返回 defaultMessage 的参数。简写是 &lt;code&gt;intl.get(&#39;not-exist-key&#39;).d(&#39;default message&#39;)&lt;/code&gt; 。&lt;/p&gt;
+&lt;h3 id=&#34;message-with-variables&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#message-with-variables&#34;&gt;#&lt;/a&gt; Message With Variables&lt;/h3&gt;
+&lt;p&gt;假如某个句子包含了一个变量怎么办？比如一个用户名，我们只有在用户登录的时候才知道他的用户名。&lt;/p&gt;
+&lt;figure class=&#34;highlight ts&#34;&gt;&lt;figcaption data-lang=&#34;TypeScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;me&#34;&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;你好，我是&amp;#123;me&amp;#125;&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;此时就用到了 get 放的第二个参数。对于上面的例子，我们可以这样处理：&lt;/p&gt;
+&lt;figure class=&#34;highlight ts&#34;&gt;&lt;figcaption data-lang=&#34;TypeScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token operator&#34;&gt;&amp;lt;&lt;/span&gt;p&lt;span class=&#34;token operator&#34;&gt;&gt;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;intl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;me&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;me&#39;&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#39;皮卡丘&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;/&lt;/span&gt;p&lt;span class=&#34;token operator&#34;&gt;&gt;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;get 方法会找出句子中 &lt;code&gt;被&amp;#123;&amp;#125;包住的变量me&lt;/code&gt; ，然后在第二个参数 (json 对象) 找出 me 对应的值皮卡丘并将 &lt;code&gt;&amp;#123;me&amp;#125;&lt;/code&gt;  整个用 &lt;code&gt;皮卡丘&lt;/code&gt; 替换。另外需要注意的是， &lt;code&gt;json对象只能为一层，不可嵌套&lt;/code&gt; 。&lt;/p&gt;
+&lt;h3 id=&#34;display-currency&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#display-currency&#34;&gt;#&lt;/a&gt; Display Currency&lt;/h3&gt;
+&lt;p&gt;它还可以用来格式化货币。假如有这么一段句子&lt;/p&gt;
+&lt;figure class=&#34;highlight js&#34;&gt;&lt;figcaption data-lang=&#34;JavaScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;price&#34;&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;token string&#34;&gt;&#34;这件衣服是 &amp;#123;price,number,CNY&amp;#125; 人民币&#34;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;如果我们想将一个数字以人民币的形式写进去的话可以这么做：&lt;/p&gt;
+&lt;figure class=&#34;highlight ts&#34;&gt;&lt;figcaption data-lang=&#34;TypeScript&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;intl&lt;span class=&#34;token punctuation&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;token function&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;price&#39;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;token punctuation&#34;&gt;&amp;#123;&lt;/span&gt;&lt;span class=&#34;token string&#34;&gt;&#39;price&#39;&lt;/span&gt;&lt;span class=&#34;token operator&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;token number&#34;&gt;1000&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;&amp;#125;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;最终显示结果是: &lt;code&gt;这件衣服是 ￥1,000 人民币&lt;/code&gt; &lt;br /&gt;
+其实它做了两件事：一个是加符号，另一个是加分隔符。同时 &lt;code&gt;CNY表示人民币，USD表示美元&lt;/code&gt; 。&lt;/p&gt;
+&lt;h3 id=&#34;&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#&#34;&gt;#&lt;/a&gt; &lt;/h3&gt;
+ ]]></description>
+        </item>
         <item>
             <guid isPermalink="true">http://jluyeyu.com/javascript/%E7%A4%BE%E4%BA%A4%E5%AA%92%E4%BD%93%E5%88%86%E4%BA%AB/</guid>
             <title>社交媒体分享</title>
@@ -1378,34 +1472,6 @@ ControlMode：（默认WifiMode::OfdmRate6Mbps）specify a mode for all ‘reque
 &lt;h3 id=&#34;topology-helpers&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#topology-helpers&#34;&gt;#&lt;/a&gt; Topology Helpers&lt;/h3&gt;
 &lt;p&gt;如同现实网络中的主机都默认装有内置网卡一样，把网络设备连接到节点、信道、配置 IP 地址等在 ns3 是很普遍的任务，那么干脆提供 “拓扑生成器” 来使这个工作变得尽可能的容易。举例来说：创建一个网络设备，配置一个 MAC 地址，把此网络设备装载到节点上，设置节点的协议栈以及连接网络设备到一个信道，这些事情都需要许多分立的 ns-3 核心操作。而当需要把许多设备连接到多点信道，在网际间将单个网络设备进行连接时，则需要对 ns-3 核心进行更多的分立操作。此时提供拓扑生成器来整合这些大量分立的步骤，使其成为一个简单易用的操作。&lt;/p&gt;
 &lt;p&gt;​ 很明显， &lt;code&gt;Helper&lt;/code&gt;  类可以极大地方便用户。例如 &lt;code&gt;TopologyReaderHelper&lt;/code&gt;  类可以使得更容易配置和使用通用的 &lt;code&gt;TopologyReader&lt;/code&gt; 。再如类 &lt;code&gt;InternetStackHelper&lt;/code&gt;  是一个安装 &lt;code&gt;PointToPointHelper&lt;/code&gt;  对象和点到点网络设备的网络协议栈的拓扑生成器，它会为每一个节点容器中的节点安装一个网络协议栈（如 TCP、UDP 和 IP 等）。&lt;/p&gt;
- ]]></description>
-        </item>
-        <item>
-            <guid isPermalink="true">http://jluyeyu.com/ns3/1.ns3%E5%88%9D%E8%AF%86/</guid>
-            <title>1.ns3初识</title>
-            <link>http://jluyeyu.com/ns3/1.ns3%E5%88%9D%E8%AF%86/</link>
-            <category term="ns3" scheme="http://jluyeyu.com/categories/ns3/" />
-            <category term="ns3" scheme="http://jluyeyu.com/tags/ns3/" />
-            <pubDate>Sun, 23 Oct 2022 17:00:52 +0800</pubDate>
-            <description><![CDATA[ &lt;h2 id=&#34;1ns3初识&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#1ns3初识&#34;&gt;#&lt;/a&gt; 1.ns3 初识&lt;/h2&gt;
-&lt;h3 id=&#34;背景&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#背景&#34;&gt;#&lt;/a&gt; 背景&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;ns3&lt;/code&gt;  是一个&lt;strong&gt;离散事件驱动的网络模拟器&lt;/strong&gt;，意在满足学术和教学要求。它是由 C++/Python 编写的开源项目，主要运行平台是 GUL/Linux（如 Ubuntu 等）。对于 Windows 系统，可以通过安装虚拟机来运行。  NS3 主要用来模拟计算机网络，可以在模拟现实世界中的各种类型的网络通信。&lt;/p&gt;
-&lt;h3 id=&#34;安装&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#安装&#34;&gt;#&lt;/a&gt; 安装&lt;/h3&gt;
-&lt;h4 id=&#34;1环境&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#1环境&#34;&gt;#&lt;/a&gt; 1. 环境&lt;/h4&gt;
-&lt;p&gt;系统：Ubuntu18.04&lt;br /&gt;
- 版本：ns3.xx（实例用的 3.31，推荐 3.27）&lt;/p&gt;
-&lt;h4 id=&#34;2换源&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#2换源&#34;&gt;#&lt;/a&gt; 2. 换源&lt;/h4&gt;
-&lt;p&gt;将源换成国内的源，比较好，之前用的自带的源，安装可视化的模块时死活装不上，换成国内的源之后，装上了。所以推荐换华为的源&lt;br /&gt;
- System setting-&amp;gt;software&amp;amp;update&lt;br /&gt;
-&lt;img data-src=&#34;https://leanote.com/api/file/getImage?fileId=5fb0ddf8ab644104210000f3&#34; alt=&#34;图片标题&#34; /&gt;&lt;/p&gt;
-&lt;h4 id=&#34;3安装一些包&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#3安装一些包&#34;&gt;#&lt;/a&gt; 3. 安装一些包&lt;/h4&gt;
-&lt;p&gt;将下面的代码拷贝到 download.sh 中，批下载&lt;/p&gt;
-&lt;figure class=&#34;highlight shell&#34;&gt;&lt;figcaption data-lang=&#34;Bash&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;gedit download.sh&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;figure class=&#34;highlight shell&#34;&gt;&lt;figcaption data-lang=&#34;Bash&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token comment&#34;&gt;#python 环境&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;apt-get&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;install&lt;/span&gt; gcc g++ python python3 python3-dev&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token comment&#34;&gt;#安装 Netanim animator 关联库&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;apt-get&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;install&lt;/span&gt; qt5-default mercurial&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;5&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token comment&#34;&gt;#安装 ns-3-pyviz visualizer 关联库&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;6&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;apt-get&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;install&lt;/span&gt; gir1.2-goocanvas-2.0 python-gi python-gi-cairo python-pygraphviz python3-gi python3-gi-cairo python3-pygraphviz gir1.2-gtk-3.0 ipython ipython3  &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;7&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token comment&#34;&gt;#其他关联库&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;8&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;apt-get&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;install&lt;/span&gt; openmpi-bin openmpi-common openmpi-doc libopenmpi-dev &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;9&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;apt-get&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;install&lt;/span&gt; gdb valgrind uncrustify&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;10&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;apt-get&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;install&lt;/span&gt; python3-sphinx dia gsl-bin libgsl-dev libgsl23 libgslcblas0 tcpdump sqlite sqlite3 libsqlite3-dev libxml2 libxml2-dev&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;11&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;apt-get&lt;/span&gt; &lt;span class=&#34;token function&#34;&gt;install&lt;/span&gt; libgtk2.0-0 libgtk2.0-dev vtun lxc uml-utilities libboost-signals-dev libboost-filesystem-dev&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cDovL3huLS1kb3dubG9hZC1sbzl3eTM2Yy5zaA==&#34;&gt;运行 download.sh&lt;/span&gt;&lt;/p&gt;
-&lt;figure class=&#34;highlight shell&#34;&gt;&lt;figcaption data-lang=&#34;Bash&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;sh&lt;/span&gt; download.sh&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;h4 id=&#34;4下载ns-3源码&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#4下载ns-3源码&#34;&gt;#&lt;/a&gt; 4. 下载 ns-3 源码&lt;/h4&gt;
-&lt;figure class=&#34;highlight shell&#34;&gt;&lt;figcaption data-lang=&#34;Bash&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;mkdir&lt;/span&gt; workspace&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token builtin class-name&#34;&gt;cd&lt;/span&gt; workspace&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;wget&lt;/span&gt; https://www.nsnam.org/release/ns-allinone-3.31.tar.bz2 &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token function&#34;&gt;tar&lt;/span&gt; xjf ns-allinone-3.31.tar.bz2&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;h4 id=&#34;5编译ns-3&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#5编译ns-3&#34;&gt;#&lt;/a&gt; 5. 编译 ns-3&lt;/h4&gt;
-&lt;figure class=&#34;highlight shell&#34;&gt;&lt;figcaption data-lang=&#34;Bash&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token builtin class-name&#34;&gt;cd&lt;/span&gt; ns-allinone-3.31/ns-3.31/&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;./waf clean&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;./waf configure --build-profile&lt;span class=&#34;token operator&#34;&gt;=&lt;/span&gt;debug --enable-examples --enable-tests&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;4&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;./waf&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;h4 id=&#34;6测试&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#6测试&#34;&gt;#&lt;/a&gt; 6. 测试&lt;/h4&gt;
-&lt;figure class=&#34;highlight shell&#34;&gt;&lt;figcaption data-lang=&#34;Bash&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;./test.py -c core&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;&lt;img data-src=&#34;https://leanote.com/api/file/getImage?fileId=5fb0ba5cab6441020a00009d&#34; alt=&#34;图片标题&#34; /&gt;&lt;/p&gt;
-&lt;figure class=&#34;highlight shell&#34;&gt;&lt;figcaption data-lang=&#34;Bash&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;./waf --run hello-simulator&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;p&gt;&lt;img data-src=&#34;https://leanote.com/api/file/getImage?fileId=5fb0ba8fab6441020a0000aa&#34; alt=&#34;图片标题&#34; /&gt;&lt;/p&gt;
  ]]></description>
         </item>
     </channel>
