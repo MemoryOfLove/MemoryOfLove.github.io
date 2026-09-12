@@ -8,7 +8,16 @@
     <author>
       <name>jluyeyu</name>
     </author>
-    <updated>2024-04-08T01:57:52.000Z</updated>
+    <updated>2026-09-12T12:02:27.101Z</updated>
+    <entry>
+        <id>http://jluyeyu.com/hello-blog/</id>
+        <title>本站说明</title>
+        <link rel="alternate" href="http://jluyeyu.com/hello-blog/"/>
+        <content type="html">&lt;p&gt;​	本网站主要是分享前端的知识，包括 leetcode 算法题、面试经验、javascript、html、css、前端小技巧、常见框架 (vue、react)、第三方库等使用，也会分享一些自己的学习成长过程、和项目学习经验，以上。&lt;/p&gt;
+&lt;p&gt;&lt;img data-src=&#34;http://static.jluyeyu.com/headicons/m8.jpg&#34; alt=&#34;图1&#34; /&gt;&lt;/p&gt;
+</content>
+        <updated>2026-09-12T12:02:27.101Z</updated>
+    </entry>
     <entry>
         <id>http://jluyeyu.com/react/react%E5%9B%BD%E9%99%85%E5%8C%96%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/</id>
         <title>react国际化的常用方法</title>
@@ -597,15 +606,6 @@ console.log(name) // &#39;changed&#39;
         <category term="javascript" scheme="http://jluyeyu.com/categories/javascript/" />
         <category term="javascript" scheme="http://jluyeyu.com/tags/javascript/" />
         <updated>2023-05-07T00:35:52.000Z</updated>
-    </entry>
-    <entry>
-        <id>http://jluyeyu.com/hello-blog/</id>
-        <title>本站说明</title>
-        <link rel="alternate" href="http://jluyeyu.com/hello-blog/"/>
-        <content type="html">&lt;p&gt;​	本网站主要是分享前端的知识，包括 leetcode 算法题、面试经验、javascript、html、css、前端小技巧、常见框架 (vue、react)、第三方库等使用，也会分享一些自己的学习成长过程、和项目学习经验，以上。&lt;/p&gt;
-&lt;p&gt;&lt;img data-src=&#34;http://static.jluyeyu.com/headicons/m8.jpg&#34; alt=&#34;图1&#34; /&gt;&lt;/p&gt;
-</content>
-        <updated>2023-02-16T07:50:57.381Z</updated>
     </entry>
     <entry>
         <id>http://jluyeyu.com/uncategorized/oss%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/</id>
